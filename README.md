@@ -30,11 +30,9 @@ To learn more about the format of the template and how you construct it, see
 To view the JSON syntax for resources types, see [Define resources in Azure Resource Manager templates](https://docs.microsoft.com/en-us/azure/templates/).
 
 ## Future Development ideas
-. on the HA setup deploy the pacemaker infrastructure 
-. add Azure files for uploading SAP media
-. install SAP HANA directly from the workflow if SAP media are present
-
-## Licence
+* on the HA setup deploy the pacemaker infrastructure 
+* add Azure files for uploading SAP media
+* install SAP HANA directly from the workflow if SAP media are present
 
 ## Contribution 
 If you would like to contribute, please fork this repository and *send pull requests*. 
@@ -46,5 +44,4 @@ If you would like to contribute, please fork this repository and *send pull requ
 > **Always commit to `develop`**
 
 Have a lot of fun...
-
 

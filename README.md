@@ -43,7 +43,6 @@ To view the JSON syntax for resources types, see [Define resources in Azure Reso
 * scripts                      - Scripts used in the templates for setup the infrastructure
 * tools                        - some helper tools
 
-
 ### Details for the 2Tier template as example:
 
 * azuredeploy.json            - Template which creates the resources
@@ -62,6 +61,6 @@ If you would like to contribute, please fork this repository and *send pull requ
 >
 >**Please do not make any commits to the `master` branch** as `master` is reserved for releases only.
 >
-> **Always commit to `develop`**
+>**Always commit to `develop`**
 
 Have a lot of fun...

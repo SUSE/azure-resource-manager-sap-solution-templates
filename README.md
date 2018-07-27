@@ -49,6 +49,7 @@ To view the JSON syntax for resources types, see [Define resources in Azure Reso
 * azuredeploy.parameter.json  - Parameterfile for github deployment
 * metadata.json               - Description for github deployment
 
+only for marktetplace
 * version.txt                 - Version number of the template
 * createUiDefinition.json     - Frontend for the Marketplace
 * mp_guid.txt                 - Unique Id for Marketplace

@@ -43,8 +43,8 @@ docu                         - documentation of some backgrounds
 
 for_marketplace              - temporary for creating Azure Marketplace offering
 
-scripts                      - Scripts used in the templates for setup the
- infrastructure
+scripts                      - Scripts used in the templates for setup the infrastructure
+
 tool                         - some helper tools
 
 

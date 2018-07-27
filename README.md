@@ -37,33 +37,23 @@ To view the JSON syntax for resources types, see [Define resources in Azure Reso
 ## Directory structure
 ### Overall structure
 
-xTier                        - the solution templates
-
-docu                         - documentation of some backgrounds
-
-for_marketplace              - temporary for creating Azure Marketplace offering
-
-scripts                      - Scripts used in the templates for setup the
- infrastructure
-tool                         - some helper tools
+* xTier                        - the solution templates
+* docu                         - documentation of some backgrounds
+* for_marketplace              - temporary for creating Azure Marketplace offering
+* scripts                      - Scripts used in the templates for setup the infrastructure
+* tools                        - some helper tools
 
 
 ### Details for the 2Tier template as example:
 
- azuredeploy.json            - Template which creates the resources
+* azuredeploy.json            - Template which creates the resources
+* azuredeploy.parameter.json  - Parameterfile for github deployment
+* metadata.json               - Description for github deployment
 
- azuredeploy.parameter.json  - Parameterfile for github deployment
-
- metadata.json               - Description for github deployment
-
-
- version.txt                 - Version number of the template
-
- createUiDefinition.json     - Frontend for the Marketplace
-
- mp_guid.txt                 - Unique Id for Marketplace
-
- mainTemplate.json           - Temporary copy for the Marketplace
+* version.txt                 - Version number of the template
+* createUiDefinition.json     - Frontend for the Marketplace
+* mp_guid.txt                 - Unique Id for Marketplace
+* mainTemplate.json           - Temporary file for the Marketplace
 
 ## Contribution
 If you would like to contribute, please fork this repository and *send pull requests*.

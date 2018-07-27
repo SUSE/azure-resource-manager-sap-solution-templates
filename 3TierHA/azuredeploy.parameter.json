@@ -1,0 +1,132 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "string"
+        },
+        "sapSystemId": {
+            "value": "TST"
+        },
+        "osType": {
+            "value": "SLES for SAP 12 SP3 (Premium)"
+        },
+        "size": {
+            "value": "Demo"
+        },
+        "stackType": {
+            "value": "ABAP"
+        },
+        "adminUsername": {
+            "value": "<Username for the Virtual Machine>"
+        },
+        "adminPassword": {
+            "value": "GEN-PASSWORD"
+        },
+        "sshKeyData": {
+            "value": ""
+        },
+        "createVNET": {
+            "value": "true"
+        },
+        "hanaVMSize": {
+            "value": "Standard_E4s_v3"
+        },
+        "xscsVMSize": {
+            "value": "Standard_D2s_v3"
+        },
+        "nfsVMSize": {
+            "value": "Standard_D2s_v3"
+        },
+        "appsVMSize": {
+            "value": "Standard_D2s_v3"
+        },
+        "appsVMCount": {
+            "value": 2
+        },
+        "vnetResourceGroup": {
+            "value": "RG"
+        },
+        "addressPrefixes": {
+            "value": "10.0.0.0/16"
+        },
+        "subnetName": {
+            "value": "subnet"
+        },
+        "subnetPrefix": {
+            "value": "10.0.0.0/24"
+        },
+        "nsgName": {
+            "value": "nsg"
+        },
+        "vnetName": {
+            "value": "vnet"
+        },
+        "appAVSetName": {
+            "value": "app-av"
+        },
+        "appNICName": {
+            "value": "app-nic"
+        },
+        "appVMName": {
+            "value": "app-vm"
+        },
+        "xscsAVSetName": {
+            "value": "sap-av"
+        },
+        "xscsPIPName": {
+            "defaultValue": "sap-pip"
+        },
+        "xscsNICName": {
+            "defaultValue": "sap-nic"
+        },
+        "xscsLoadBalancerName": {
+            "defaultValue": "sap-lb"
+        },
+        "xscsVMName": {
+            "defaultValue": "sap-vm"
+        },
+        "ascsInstanceNumber": {
+            "value": 0
+        },
+        "ascsInstanceNumberERS": {
+            "value": 10
+        },
+        "scsInstanceNumber": {
+            "value": 1
+        },
+        "scsInstanceNumberERS": {
+            "value": 11
+        },
+        "hAVSetName": {
+            "value": "hana-av"
+        },
+        "hNICName": {
+            "value": "hana-nic"
+        },
+        "hLoadBalancerName": {
+            "value": "hana-lb"
+        },
+        "hVMName": {
+            "value": "hana-vm"
+        },
+        "dbInstanceNumber": {
+            "value": 50
+        },
+        "nfsAVSetName": {
+            "value": "nfs-av"
+        },
+        "nfsNICName": {
+            "value": "nfs-nic"
+        },
+        "nfsLoadBalancerName": {
+            "value": "nfs-lb"
+        },
+        "nfsVMName": {
+            "value": "nfs-vm"
+        },
+        "_SUSETags": {
+            "value": "b0d27bab-bf43-4cad-9bf5-40a8041d59b8"
+        }
+    }
+}

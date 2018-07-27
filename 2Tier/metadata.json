@@ -1,0 +1,8 @@
+{
+  "$schema": "https://aka.ms/azure-quickstart-templates-metadata-schema#",
+  "itemDisplayName": "SAP HANA 2-tier image",
+  "description": "This template deploys a VM using a Managed Disk image (Premium) for SAP HANA.",
+  "summary": "This template takes a minimum amount of parameters and deploys a VM cusstomized for SAP HANA. The machine type and the number and size of the disks depend on the T-Shirt size (Demo/Small/Medium/Large) chosen in the template.",
+  "githubUsername": "petersatsuse",
+  "dateUpdated": "2018-07-06"
+}

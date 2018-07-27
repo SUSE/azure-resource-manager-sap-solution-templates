@@ -1,0 +1,191 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+    "handler": "Microsoft.Compute.MultiVm",
+    "version": "0.1.2-preview",
+    "parameters": {
+        "basics": [
+            {
+                "name": "adminUsername",
+                "type": "Microsoft.Compute.UserNameTextBox",
+                "label": "Username",
+                "toolTip": "Admin username for the machines",
+                "osPlatform": "Linux",
+                "constraints": {
+                    "required": true
+                }
+            },
+            {
+                "name": "adminPassword",
+                "type": "Microsoft.Compute.CredentialsCombo",
+                "label": {
+                  "authenticationType": "Authentication type",
+                  "password": "Password",
+                  "confirmPassword": "Confirm password",
+                  "sshPublicKey": "SSH public key"
+                },
+                "constraints": {
+                  "required": true
+                },
+                "osPlatform": "Linux"
+              }
+        ],
+        "steps": [
+            {
+                "name": "SAPConfig",
+                "label": "SAP Configuration",
+                "subLabel": {
+                    "preValidation": "Configure the SAP deployment",
+                    "postValidation": "Done"
+                },
+                "bladeTitle": "SAP Configuration",
+                "elements": [
+                    {
+                        "name": "sapSystemId",
+                        "type": "Microsoft.Common.TextBox",
+                        "label": "SAP System ID",
+                        "toolTip": "The SAP System ID.",
+                        "constraints": {
+                            "required": true,
+                            "regex": "^(?!ADD|ADM|ALL|AMD|AND|ANY|ARE|ASC|AUX|AVG|BIN|BIT|CDC|COM|CON|DAA|DBA|DBM|DBO|DTD|END|EPS|EXE|FOR|GET|GID|IBM|INT|KEY|LOG|LPT|LIB|MAP|MAX|MEM|MIG|MIN|MON|NET|NIX|NOT|NUL|OFF|OLD|OMS|OUT|PAD|PRN|RAW|REF|ROW|SAP|SET|SGA|SHG|SID|SQL|SUM|SYS|TMP|TOP|TRC|UID|USE|USR|VAR)([A-Z]{3})$",
+                            "validationMessage": "The SAP System ID must be exactly three uppercase letters. Some combinations are not allowed."
+                        }
+                    },
+                    {
+                        "name": "deploymentSize",
+                        "type": "Microsoft.Common.DropDown",
+                        "label": "SAP Deployment Size",
+                        "defaultValue": "Demo",
+                        "toolTip": "The size of the SAP deployment.",
+                        "constraints": {
+                            "allowedValues": [
+                                {
+                                    "label": "Demo",
+                                    "value": "{\"size\":\"Demo\",\"hanaVMSize\":\"Standard_E4s_v3\"}"
+                                },
+                                {
+                                    "label": "Small",
+                                    "value": "{\"size\":\"Small\",\"hanaVMSize\":\"Standard_E64s_v3\"}"
+                                },
+                                {
+                                    "label": "Medium",
+                                    "value": "{\"size\":\"Medium\",\"hanaVMSize\":\"Standard_M64s\"}"
+                                },
+                                {
+                                    "label": "Large",
+                                    "value": "{\"size\":\"Large\",\"hanaVMSize\":\"Standard_M128s\"}"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "VMSizes",
+                "label": "VM Sizes Configuration",
+                "subLabel": {
+                    "preValidation": "Configure the VM sizes",
+                    "postValidation": "Done"
+                },
+                "bladeTitle": "VM Sizes Configuration",
+                "elements": [
+                    {
+                        "name": "hanaVMSize",
+                        "type": "Microsoft.Compute.SizeSelector",
+                        "label": "HANA VM Size",
+                        "toolTip": "VM size for HANA nodes",
+                        "recommendedSizes": [
+                            "[parse(steps('SAPConfig').deploymentSize).hanaVMSize]"
+                        ],
+                        "constraints": {
+                            "allowedSizes": [
+                                "[parse(steps('SAPConfig').deploymentSize).hanaVMSize]"
+                            ]
+                        },
+                        "osPlatform": "Linux",
+                        "imageReference": {
+                            "publisher": "SUSE",
+                            "offer": "SLES-SAP",
+                            "sku": "12-SP3"
+                        },
+                        "count": 1,
+                        "visible": true
+                    }
+                ]
+            },
+            {
+                "name": "networkConfig",
+                "label": "Network Configuration",
+                "subLabel": {
+                    "preValidation": "Configure the Virtual Network",
+                    "postValidation": "Done"
+                },
+                "bladeTitle": "Network Configuration",
+                "elements": [
+                    {
+                        "name": "virtualNetwork",
+                        "type": "Microsoft.Network.VirtualNetworkCombo",
+                        "label": {
+                            "virtualNetwork": "Virtual network",
+                            "subnets": "Subnets"
+                        },
+                        "toolTip": {
+                            "virtualNetwork": "Name of the virtual network",
+                            "subnets": "Subnets for the virtual network"
+                        },
+                        "defaultValue": {
+                            "name": "vnet",
+                            "addressPrefixSize": "/24"
+                        },
+                        "constraints": {
+                            "minAddressPrefixSize": "/24"
+                        },
+                        "options": {
+                            "hideExisting": false
+                        },
+                        "subnets": {
+                            "subnet-1": {
+                                "label": "Subnet 1",
+                                "defaultValue": {
+                                    "name": "subnet-1",
+                                    "addressPrefixSize": "/24"
+                                },
+                                "constraints": {
+                                    "minAddressPrefixSize": "/24",
+                                    "minAddressCount": 12,
+                                    "requireContiguousAddresses": false
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        ],
+        "outputs": {
+
+            "location": "[location()]",
+
+            "sapSystemId": "[steps('SAPConfig').sapSystemId]",
+            "osType": "SLES for SAP 12 SP3 (Premium)",
+            "size": "[parse(steps('SAPConfig').deploymentSize).size]",
+            
+            "adminUsername": "[basics('adminUsername')]",
+            "adminPassword": "[basics('adminPassword').password]",
+            "sshKeyData": "[basics('adminPassword').sshPublicKey]",
+            "createVNET": "[equals(steps('networkConfig').virtualNetwork.newOrExisting, 'new')]",
+
+            "vnetResourceGroup": "[steps('networkConfig').virtualNetwork.resourceGroup]",
+            "addressPrefixes": "[steps('networkConfig').virtualNetwork.addressPrefixes]",
+            "subnetName": "[steps('networkConfig').virtualNetwork.subnets.subnet-1.name]",
+            "subnetPrefix": "[steps('networkConfig').virtualNetwork.subnets.subnet-1.addressPrefix]",
+
+            "nsgname": "nsg",
+            "vnetName": "[steps('networkConfig').virtualNetwork.name]",
+
+            "hPIPName": "[concat(steps('SAPConfig').sapSystemId, '-hana-pip')]",            
+            "hNICName": "[concat(steps('SAPConfig').sapSystemId, '-hana-nic')]",
+            "hVMName": "[concat(steps('SAPConfig').sapSystemId, '-hana-vm')]",
+
+            "hanaVMSize": "[parse(steps('SAPConfig').deploymentSize).hanaVMSize]"
+        }
+    }
+}

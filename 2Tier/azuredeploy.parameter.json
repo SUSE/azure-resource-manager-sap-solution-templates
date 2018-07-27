@@ -1,0 +1,63 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "string"
+        },
+        "sapSystemId": {
+            "value": "TST"
+        },
+        "osType": {
+            "value": "SLES for SAP 12 SP3 (Premium)"
+        },
+        "size": {
+            "value": "Demo"
+        },
+        "adminUsername": {
+            "value": "<Username for the Virtual Machine>"
+        },
+        "adminPassword": {
+            "value": "GEN-PASSWORD"
+        },
+        "sshKeyData": {
+            "value": ""
+        },
+        "createVNET": {
+            "value": "true"
+        },
+        "vnetResourceGroup": {
+            "value": "RG"
+        },        
+        "addressPrefixes": {
+            "value": "10.0.0.0/16"
+        },
+        "subnetName": {
+            "value": "subnet"
+        },
+        "subnetPrefix": {
+            "value": "10.0.0.0/24"
+        },
+        "nsgName": {
+            "value": "nsg"
+        },
+        "vnetName": {
+            "value": "vnet"
+        },
+        "hPIPName": {
+            "value": "hana-pip"
+        },
+        "hNICName": {
+            "value": "hana-nic"
+        },
+        "hVMName": {
+            "value": "hana-vm"
+        },
+        "hanaVMSize": {
+            "value": "Standard_E4s_v3"
+        },
+        "_SUSETags": {
+            "value": "b0d27bab-bf43-4cad-9bf5-40a8041d59b8"
+        }
+    }
+}

@@ -1,0 +1,8 @@
+{
+  "$schema": "https://aka.ms/azure-quickstart-templates-metadata-schema#",
+  "itemDisplayName": "SAP 3-tier configuration",
+  "description": "The template deploys 1 DB, 1 ASCS/SCS servers and several (2-10) virtual machines that can host dialog instances.",
+  "summary": "This template takes a minimum amount of parameters and deploys VM's customized for use with SAP NetWeaver and SAP HANA. The machine type and the number and size of the disks depend on the T-Shirt size (Demo/Small/Medium/Large) chosen in the template.",
+  "githubUsername": "petersatsuse",
+  "dateUpdated": "2018-07-06"
+}

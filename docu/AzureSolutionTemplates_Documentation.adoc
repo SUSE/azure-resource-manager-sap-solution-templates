@@ -1,0 +1,712 @@
+//variables
+//:imagesdir: /data/GITHUB/azure-resource-manager-sap-solution-templates/docu/images/src/png
+:ResGrp: mytestRG
+:Region: westeurope
+:pre: hsr
+
+////
+Some of the variable are not recognized by asciidoc therefore they are commented out
+asciidoctor know a few more; in general they are as reference for docbook-xml which is
+the SUSE standard for documentation
+////
+
+= SUSE and Microsoft Solution templates for SAP Applications
+//subtitle Simplified Deployment on Microsoft Azure
+//:productname: SUSE Linux Enterprise Server for SAP Applications
+//:productnumber: 12
+
+//:Author: Peter Schinagl, Sr. Technical Architect, SUSE
+//:Publication Date: 20180508
+
+
+//[Abstract]
+This document describes several predefined solution templates for SAP Applications from SUSE and Microsoft for simplified deployment on Microsoft Azure
+
+== Overview
+For every template there are four possible sizes available with the following naming convention
+
+* Demo
+* Small
+* Medium
+* Large
+
+The _Demo_ and _Small_ sizes are targeted at non-production systems. The _Medium_ and _Large sizes_ can be used for production systems, as they are build on M-Series/VM which are SAP certified.
+
+One of the presumptions of this document is that you are familiar with SAP Netweaver and SAP HANA.
+
+Microsoft provides a good overview page about SAP deployments in Azure at
+https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/sap/get-started
+
+For the High Availabilty (HA) scenario you should have in addition good knowledge of
+
+* High availability for SAP NetWeaver (ASCS/SCS/ERS)
+* the SUSE High Availability Extension (HAE)
+* the best practice documents at https://www.suse.com/products/sles-for-sap/resource-library/sap-best-practices
+
+For production systems you need to take care of the monitoring requirements of SAP
+
+    https://launchpad.support.sap.com/#/notes/2191498/E[SAP Note 2191498] This note discusses SAP "enhanced monitoring" with Linux VMs on Azure.
+
+    https://launchpad.support.sap.com/#/notes/1102124/E[SAP Note 1102124] This note discusses information about SAPOSCOL on Linux.
+
+    https://launchpad.support.sap.com/#/notes/2178632/E[SAP Note 2178632] This note discusses key monitoring metrics for SAP on Microsoft Azure.
+
+
+You need to provide the SAP software and license by yourself. You can download SAP software from the SAP Service Marketplace (https://service.sap.com)
+
+To prepare the Azure VM for the SAP Netweaver and HANA installation, the following steps outlined in the section below.
+
+=== Operating System updates
+
+Check for SUSE Linux OS updates and fixes before installing additional software. By installing a patch, you might be able to avoid a call to the support desk.
+
+Here is an example of checking for available patches for SUSE Linux by using the _zypper_ command:
+
+----
+sudo zypper list-patches
+----
+
+Depending on the kind of issue, patches are classified by _category_ and _severity_.
+
+Commonly used values for _category_ are: security, recommended, optional, feature, document, or yast.
+
+Commonly used values for _severity_ are: critical, important, moderate, low, or unspecified.
+
+
+The _zypper_ command looks only for the updates that your installed packages need. For example, you could use this command:
+
+----
+sudo zypper patch --category=security,recommended --severity=critical,important
+----
+
+You can add the parameter _--dry-run_ to test the update without actually updating the system.
+
+
+
+== SAP HANA 2-tier (DB-tier) template
+
+The template provides and deploys a VM that is customized for use with SAP HANA, using the latest pay-as-you-go (PAYG) version of the SUSE Linux Enterprise Server for SAP Applications (SLES4SAP).
+
+It deploys 1 server on Premium Storage (Premium_LRS) and uses Managed Disks.
+
+image::azure_2tier.svg[scaledwidth="100%"]
+
+=== OS configuration for SAP HANA
+
+SAP HANA requires specific Linux kernel settings, which are not part of the standard Azure images and must be set manually.
+
+----
+sudo saptune solution apply HANA
+----
+
+=== Disk overview
+
+The template uses the following disks and mount points for the HANA machine
+
+Demo
+[options="header"]
+|===============================
+|Mountpoint    | Disk | Size
+|/hana/data    | 0,1  | 128 GB
+|/hana/log     | 2,3  | 128 GB
+|/hana/shared  | 4    | 128 GB
+|/usr/sap      | 5    | 128 GB
+|/hana/backup  | 6    | 128 GB
+|/sapmnt       | 7    | 128 GB
+|===============================
+//                    "scriptArguments": "[concat('-luns \"0,1#2,3#4#5#6#7\" -names \"data#log#shared#usrsap#backup#sapmnt\" -paths \"/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup#/sapmnt/', parameters('sapSystemId'), '\" -sizes \"100#100#100#100#100#100\"')]",
+
+
+Small
+[options="header"]
+|===============================
+|Mountpoint    | Disk  | Size
+|/hana/data    | 0,1,2 | 512 GB
+|/hana/log     | same disks as data|
+|/hana/shared  | 3     | 512 GB
+|/usr/sap      | 4     |  64 GB
+|/hana/backup  | 5     |1024 GB
+|/sapmnt       | 6     |  64 GB
+|===============================
+//                    "scriptArguments": "[concat('-luns \"0,1,2#3#4#5#6\" -names \"datalog#shared#usrsap#backup#sapmnt\" -paths \"/hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup#/sapmnt/', parameters('sapSystemId'), '\" -sizes \"70,100#100#100#100#100\"')]",
+
+
+Medium
+[options="header"]
+|===============================
+|Mountpoint    | Disk | Size
+|/hana/data    | 0,1,2,3| 512 GB
+|/hana/log     | 4,5    | 512 GB
+|/hana/shared  | 6      |1024 GB
+|/usr/sap      | 7      |  64 GB
+|/hana/backup  | 8,9    |1024 GB
+|/sapmnt       | 10     |  64 GB
+|===============================
+//                    "scriptArguments": "[concat('-luns \"0,1,2,3#4,5#6#7#8,9#10\" -names \"data#log#shared#usrsap#backup#sapmnt\" -paths \"/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup#/sapmnt/', parameters('sapSystemId'), '\" -sizes \"100#100#100#100#100#100\"')]",
+
+
+Large
+[options="header"]
+|===============================
+|Mountpoint    | Disk | Size
+|/hana/data    | 0,1,2|1024 GB
+|/hana/log     | 3,4  | 512 GB
+|/hana/shared  | 5    |1024 GB
+|/usr/sap      | 6    |  64 GB
+|/hana/backup  | 7,8  |2048 GB
+|/sapmnt       | 9    |  64 GB
+|===============================
+//                    "scriptArguments": "[concat('-luns \"0,1,2#3,4#5#6#7,8#9\" -names \"data#log#shared#usrsap#backup#sapmnt\" -paths \"/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup#/sapmnt/', parameters('sapSystemId'), '\" -sizes \"100#100#100#100#100#100\"')]",
+
+
+////
+Below how it looks like directly on the system for the size medium
+----
+# df -h
+
+Filesystem                              Size  Used Avail Use% Mounted on
+devtmpfs                                213G  8,0K  213G   1% /dev
+tmpfs                                   319G     0  319G   0% /dev/shm
+tmpfs                                   213G   18M  213G   1% /run
+tmpfs                                   213G     0  213G   0% /sys/fs/cgroup
+/dev/sda2                                29G  1,7G   26G   7% /
+/dev/sda1                               976M   46M  880M   5% /boot
+/dev/sdb1                               851G   73M  808G   1% /mnt/resource
+/dev/mapper/vg--datalog-lv--datalog--0  1,1T   34M  1,1T   1% /hana/data
+/dev/mapper/vg--datalog-lv--datalog--1  461G   33M  461G   1% /hana/log
+/dev/sdg1                               512G   33M  512G   1% /hana/shared
+/dev/sdf1                                64G   33M   64G   1% /usr/sap
+/dev/sdi1                               1,0T   33M  1,0T   1% /hana/backup
+/dev/sdh1                                64G   33M   64G   1% /sapmnt/ABC
+tmpfs                                    43G     0   43G   0% /run/user/1000
+----
+////
+
+For the installation of SAP HANA there are different ways available. You can use the naive SAP mechanism of using the SAP Software Provisioning Manager (SWPM) or the HANA database lifecycle manager (HDBLCM).
+
+For details, have a look at the SAP documentation for details at https://help.sap.com/viewer/p/SAP_HANA_PLATFORM.
+
+A very short description is in addition available at https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/sap/hana-get-started .
+
+An other way would be to use the SUSE YaST2 based HANA install wizard, which simplifies the setup. It is discussed in a later section below.
+
+== SAP Netweaver 3-tier template
+
+The template provides and deploys several VMs which are customized for use with SAP Netweaver and SAP HANA as database,
+using the latest pay-as-you-go (PAYG) version of the SUSE Linux Enterprise Server for SAP Applications
+(SLES4SAP).
+
+It deploys all server on Premium Storage (Premium_LRS) and using Managed Disks.
+
+image::azure_3tier.svg[scaledwidth="100%"]
+
+=== OS configuration for the SAP Netweaver VM
+
+SAP Netweaver requires specific Linux kernel settings, which are not part of the standard Azure images and must be set manually.
+
+----
+sudo saptune solution apply NETWEAVER
+----
+
+=== OS configuration for the SAP HANA VM
+
+SAP HANA requires specific Linux kernel settings, which are not part of the standard Azure images and must be set manually.
+
+----
+sudo saptune solution apply HANA
+----
+
+For more details see the documentation at https://www.suse.com/documentation/sles-for-sap-12/book_s4s/data/sec_saptune.html
+
+=== Disk overview
+
+The template uses the following disks and mount points for the HANA machine
+
+Demo
+[options="header"]
+|===============================
+|Mountpoint    | Disk | Size
+|/hana/data    | 0,1  | 128 GB
+|/hana/log     | 2,3  | 128 GB
+|/hana/shared  | 4    | 128 GB
+|/usr/sap      | 5    | 128 GB
+|/hana/backup  | 6    | 128 GB
+|/sapmnt       | 7     | 128 GB
+|===============================
+// "scriptArguments": "-luns '0,1#2,3#4#5#6,7' -names 'data#log#shared#usrsap#backup' -paths '/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup'  -sizes '100#100#100#100#100'",
+
+Small
+[options="header"]
+|===============================
+|Mountpoint    | Disk  | Size
+|/hana/data    | 0,1,2 | 512 GB
+|/hana/log     | same disks as data|
+|/hana/shared  | 3     | 512 GB
+|/usr/sap      | 4     |  64 GB
+|/hana/backup  | 5     |1024 GB
+|===============================
+// "scriptArguments": "-luns '0,1,2#3#4#5' -names 'datalog#shared#usrsap#backup' -paths '/hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup' -sizes '70,100#100#100#100'",
+
+Medium
+[options="header"]
+|===============================
+|Mountpoint    | Disk | Size
+|/hana/data    | 0,1,2,3| 512 GB
+|/hana/log     | 4,5    | 512 GB
+|/hana/shared  | 6      |1024 GB
+|/usr/sap      | 7      |  64 GB
+|/hana/backup  | 8,9    |1024 GB
+|===============================
+// scriptArguments": "-luns '0,1,2,3#4,5#6#7#8,9' -names 'data#log#shared#usrsap#backup' -paths '/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup' -sizes '100#100#100#100#100'",
+
+Large
+[options="header"]
+|===============================
+|Mountpoint    | Disk | Size
+|/hana/data    | 0,1,2|1024 GB
+|/hana/log     | 3,4  | 512 GB
+|/hana/shared  | 5    |1024 GB
+|/usr/sap      | 6    |  64 GB
+|/hana/backup  | 7,8  |2048 GB
+|===============================
+// "scriptArguments": "-luns '0,1,2#3,4#5#6#7,8' -names 'data#log#shared#usrsap#backup' -paths '/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup' -sizes '100#100#100#100#100'",
+
+The XSCS machine uses only the base OS disk
+
+The APP server machines use an additional 128 GB disk for /usr/sap/<SID>
+
+=== Other settings and machines
+
+All machines created with the template use the Azure feature _Accelerated Network (AN) (only if the VM size supports AN)
+
+The XSCS machine get's a dynamic public IP address to be able to access all other machines in the private network and only use the base OS disk. There is no additional disk.
+
+The APP server machines use an additional 128 GB disk for /usr/sap/<SID> and the machines are placed in an _Availablity Set_ with a FaultDomainCount of 2 and a UpdateDomainCount of 20.
+
+[NOTE]
+An _Availability Set_ is a logical group in Azure to ensure that the VM resources are isolated from each other when they are deployed within an Azure datacenter. It ensures that the VMs you place within such an _Availability Set_ run across multiple physical servers, compute racks, storage units and network switches. The Virtual Machines are placed then into an _Availability Set_ to minimize the chances that two of them fail or are updated at the same time. This is essential when you want to build reliable cloud solutions and clusters.
+
+== SAP Netweaver 3-tier HA template
+
+The template provides and deploys several VMs *twice* to be used in a HA configuration, They are customized for use with SAP Netweaver and SAP HANA as database, using the latest pay-as-you-go (PAYG) version of the SUSE Linux Enterprise Server for SAP Applications (SLES4SAP).
+
+It deploys all server on Premium Storage (Premium_LRS) and using Managed Disks.
+
+image::azure_3tierHA.svg[scaledwidth="100%"]
+
+=== OS configuration for the SAP Netweaver VM
+
+SAP Netweaver requires specific Linux kernel settings, which are not part of the standard Azure images and must be set manually.
+
+----
+sudo saptune solution apply NETWEAVER
+----
+
+=== OS configuration for the SAP HANA VM
+
+SAP HANA requires specific Linux kernel settings, which are not part of the standard Azure images and must be set manually.
+
+----
+sudo saptune solution apply HANA
+----
+
+For more details see the documentation at https://www.suse.com/documentation/sles-for-sap-12/book_s4s/data/sec_saptune.html
+
+=== Disk overview
+
+The template uses the following disks and mount points:
+
+Demo
+[options="header"]
+|===============================
+|Mountpoint    | Disk | Size
+|/hana/data    | 0,1  | 128 GB
+|/hana/log     | 2,3  | 128 GB
+|/hana/shared  | 4    | 128 GB
+|/usr/sap      | 5    | 128 GB
+|/hana/backup  | 6    | 128 GB
+|/sapmnt       |7     | 128 GB
+|===============================
+
+// "scriptArguments": "-luns '0,1#2,3#4#5#6,7' -names 'data#log#shared#usrsap#backup' -paths '/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup'  -sizes '100#100#100#100#100'",
+
+
+Small
+[options="header"]
+|===============================
+|Mountpoint    | Disk  | Size
+|/hana/data    | 0,1,2 | 512 GB
+|/hana/log     | same disks as data|
+|/hana/shared  | 3     | 512 GB
+|/usr/sap      | 4     |  64 GB
+|/hana/backup  | 5     |1024 GB
+|===============================
+
+//"scriptArguments": "-luns '0,1,2#3#4#5' -names 'datalog#shared#usrsap#backup' -paths '/hana/data,/hana/log#/hana/shared#/usr/sap#/hana/backup' -sizes '70,100#100#100#100'",
+
+
+Medium
+[options="header"]
+|===============================
+|Mountpoint    | Disk | Size
+|/hana/data    | 0,1,2,3| 512 GB
+|/hana/log     | 4,5    | 512 GB (W)
+|/hana/shared  | 6      |1024 GB
+|/usr/sap      | 7      |  64 GB
+|/hana/backup  | 8,9    |1024 GB
+|===============================
+
+(w) uses Azure feature "writeAccelerator"
+// "scriptArguments": "-luns '0,1,2,3#4,5#6#7#8,9' -names 'data#log#shared#usrsap#backup' -paths '/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup' -sizes '100#100#100#100#100'",
+
+
+Large
+[options="header"]
+|===============================
+|Mountpoint    | Disk | Size
+|/hana/data    | 0,1,2|1024 GB
+|/hana/log     | 3,4  | 512 GB (W)
+|/hana/shared  | 5    |1024 GB
+|/usr/sap      | 6    |  64 GB
+|/hana/backup  | 7,8  |2048 GB
+|===============================
+
+(w) uses Azure feature "writeAccelerator"
+
+// "scriptArguments": "-luns '0,1,2#3,4#5#6#7,8' -names 'data#log#shared#usrsap#backup' -paths '/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup' -sizes '100#100#100#100#100'",
+
+=== Other settings and machines
+
+All machines created with the template use the Azure feature _Accelerated Network (AN)_ (only if the VM size supports AN).
+
+The XSCS machine get's a dynamic public IP address to be able to access all other machines in the private network and only use the base OS disk. There is no additional disk.
+
+The APP server machines use an additional 128 GB disk for /usr/sap/<SID> and the machines are placed in an _Availablity Set_ with a FaultDomainCount of 2 and a UpdateDomainCount of 20.
+
+[NOTE]
+An _Availability Set_ is a logical group in Azure to ensure that the VM resources are isolated from each other when they are deployed within an Azure datacenter. It ensures that the VMs you place within such an _Availability Set_ run across multiple physical servers, compute racks, storage units and network switches. The Virtual Machines are placed then into an _Availability Set_ to minimize the chances that two of them fail or are updated at the same time. This is essential when you want to build reliable cloud solutions and clusters.
+
+
+The HA template provides 2 additional instances for a HA NFS server which has a
+additional disk as share of 32GB.
+
+
+=== Internal Load Balancer and Ports
+Special for the HA setup is the use of the Azure _Internal Load Balancer_ (ILB) which is necessary to use virtual IP addresses in Azure. As such, the ILB allows the use of virtual host names and IPs for the xSCS, HA-NFS and SAP HANA pacemaker clusters. Additionally the ILB is providing Layer 4: TCP and HTTP health probes.</para>
+
+https://docs.microsoft.com/en-us/azure/load-balancer/
+
+The selection _ABAP_ uses the relevant _ASCS ports_, _JAVA_ uses the relevant _SCS ports_ and _ABAP+JAVA_ both of the ports
+
+ASCS/SCS Internal Load Balancer ports (examples all with instance **00** in bold)
+
+* ASCS ERS ports : 33**00**, 5**00**13, 5**00**14, 5**00**16
+* SCS ERS ports : 33**00**, 5**00**13, 5**00**14, 5**00**16
+
+* ASCS Ports : 32**00**, 36**00**, 39**00**, 81**00**, 5**00**13, 5**00**14, 5**00**16
+* SCS Ports : 32**00**, 33**00**, 39**00**, 81**00**, 5**00**13, 5**00**14, 5**00**16
+
+* HANA Ports : 3**00**15,3**00**17
+* NFS Ports : 2049
+
+Probe Ports:
+
+* xSCS: 62000
+* ERS : 61000
+* HANA: 62500
+* NFS : 61000
+
+
+== Quick guide to install SAP HANA on a SUSE Linux Enterprise Server for SAP Applications
+
+This section leads you through the installation of a default SAP HANA on SUSE Linux Enterprise server.
+
+It does not replace the SAP documentation - *PLEASE* read the SAP HANA installation documentation
+
+[IMPORTANT]
+You need to transfer the SAP media for SAP HANA to the Azure cloud environment
+
+=== File share for SAP Media
+Azure Files offers shared storage for applications using the Server Message Block (SMB) protocol which is very useful to upload the SAP HANA Media to it an use it from both machines.
+
+https://docs.microsoft.com/en-us/azure/storage/files/storage-files-introduction
+
+To use Azure Storage, you need to create first a storage account.
+
+In the example below, we use the Azure CLI v2 commandline installed on our local machine. It's also possible to install it on the virtual machine we have created in Azure.
+
+For more details https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-zypper?view=azure-cli-latest
+
+
+Another way would be to follow the more general steps from
+https://docs.microsoft.com/en-us/azure/virtual-machines/linux/mount-azure-file-storage-on-linux-using-smb
+
+or with using the Azure portal
+
+https://github.com/AzureCAT-GSI/SAP-HANA-ARM/blob/master/UploadToAzure.md
+
+
+==== Steps to create a file share in Azure
+
+First you need a resource group where the storage should be placed in
+
+Please substitute the _--location_ parameter with the azure region you have chosen
+
+[subs="attributes,quotes"]
+----
+az group create --name {ResGrp} _--location {Region}_
+----
+
+Now we are able to create the storage account in our resource group
+
+[subs="attributes,quotes"]
+----
+az storage account create \
+    --name {pre}sa4sapmedia \
+    --resource-group {ResGrp} \
+    --sku Standard_LRS \
+    --location {Region}
+----
+
+A good practice is to share the connection string with help of variables, as you need to add it to every following storage commands:
+
+[subs="attributes,quotes"]
+----
+az storage account show-connection-string \
+    --name {pre}sa4sapmedia \
+    --resource-group {ResGrp}
+----
+Set the AZURE_STORAGE_CONNECTION_STRING environment variable with the output value of the command. You should enclose the connection string in quotes.
+
+[subs="attributes,quotes"]
+----
+export AZURE_STORAGE_CONNECTION_STRING="YOUR_connection_string"
+----
+
+=== SAP Media
+
+Installation media for SAP HANA should be downloaded and placed in the Azure fileshare created in the step before. For this we create an own folder called "SapBits".
+
+You need to download the SAP package 51052325 (depend on the version you would like to use), which should consist of four files:
+
+51052325_part1.exe
+51052325_part2.rar
+51052325_part3.rar
+51052325_part4.rar
+
+If you have the files in your download directory on your machine, the command would look like:
+
+[subs="attributes,quotes"]
+----
+az storage share create --name mediashare
+az storage directory create --name SapBits --share-name mediashare
+
+az storage file upload --share-name mediashare/SapBits --source ~/Download/51052325_part1.exe
+az storage file upload --share-name mediashare/SapBits --source ~/Download/51052325_part2.rar
+az storage file upload --share-name mediashare/SapBits --source ~/Download/51052325_part3.rar
+az storage file upload --share-name mediashare/SapBits --source ~/Download/51052325_part4.rar
+----
+
+The next steps need to be done on your virtual machine you created for HANA in Azure. Log in to this machine.
+
+Mount it on the SUSE Linux system in Azure with the command:
+
+[subs="attributes,quotes"]
+----
+sudo zypper in cifs-utils unrar
+
+mkdir -p /hana/shared/SapBits
+
+sudo mount -t cifs //hsrsa4sapmedia.file.core.windows.net/mediashare/SapBits /mnt -o vers=3.0,username=storage-account-name,password=storage-account-key,dir_mode=0777,file_mode=0777,serverino
+
+sudo cp -v /mnt/51052325* /hana/shared/SapBits
+
+sudo umount /mnt
+----
+
+Extract the HANA software
+
+[subs="attributes,quotes"]
+----
+cd /hana/shared/SapBits
+unrar x 51052325_part1.exe
+----
+
+If you need the HANA software later again, you do not need this step as it is extracted
+
+
+=== HANA install
+
+Hana requires a few packages installed within SUSE Linux Enterprise Server for SAP Applications
+
+[subs="attributes,quotes"]
+----
+zypper in -t pattern sap-hana
+----
+
+and configuration settings
+
+[subs="attributes,quotes"]
+----
+saptune daemon start
+saptune solution apply HANA
+----
+
+There are several possibilities to install SAP HANA, which are detailed in the following sections.
+
+==== Installation using the SUSE Installation Wizard
+
+* start yast2
+
+* choose under "Software" the "SAP Installation Wizard"
+
+image::HANA_Wizard1.png[scaledwidth="100%"]
+
+* point the Installer to the directory with the SAP Media from step above
+  e.g. /hana/shared/SapBits/51052325
+
+image::HANA_Wizard3.png[scaledwidth="100%"]
+
+* the sap media get copied to the local machine
+
+image::HANA_Wizard4.png[scaledwidth="100%"]
+
+* say "NO" if you asked for Supplement/3rd-party mediashare
+
+image::HANA_Wizard5.png[scaledwidth="100%"]
+
+* click "Next" at the screen asking for SAP addons
+
+image::HANA_Wizard6.png[scaledwidth="100%"]
+
+* Fill out the 4 fields for HANA
+
+image::HANA_Wizard7.png[scaledwidth="100%"]
+
+* say "No" if you be asked for more products
+
+image::HANA_Wizard8.png[scaledwidth="100%"]
+
+* Agree with the question to continue the installation
+
+image::HANA_Wizard9.png[scaledwidth="100%"]
+
+* the HANA get installed and started
+
+This will take quite a bit - be patient - and you will see the log output in the window
+
+
+==== Installation using the Command Line
+
+The HANA installer will ask for some values.
+
+Answer the questions according to your well prepared sheet with all needed parameters.
+Do *NOT* install HANA with virtual hostname, *use* the physical hostname.
+Double-check before you type!
+
+. Install the SAP HANA Database as described in the SAP HANA Server Installation Guide on *both* machines.
+.. Change to the directory where you have downloaded *and unpacked* the installation medium ( in our example it should be /hana/shared/SapBits ):
++
+[subs="attributes,quotes"]
+----
+   cd /hana/shared/SapBits/51052325/DATA_UNITS/HDB_LCM_LINUX_X86_64
+----
++
+.. Start the SAP HANA database lifecycle manager interactively at the command line:
++
+----
+   sudo ./hdblcm
+----
+
+
+
+=== For 3-tier templates: How to Connect to the other systems
+
+Only the XSCS machine has a public IP address and needs to be used as intermediate hop (jumphost) between your actual SSH target and yourself.
+
+Instead of using something like "unsecure" SSH agent forwarding, where the data gets exposed at every jump, you can use ProxyCommand to proxy all your commands through your jumphost.
+
+Consider the following scenario.
+
+  +--------+    +---------+    /------ | Host A |
+  | Laptop |--P-| XSCS    |---+
+  +--------+    +---------+    \-------| Host B |
+                                ...
+                                 \------| Host X |
+
+A configuration like this will allow you to proxy through the jumphost (the XSCS machine) to HOST A and B, etc ...
+
+On YOUR local system create a ssh config file similar to the example below:
+[subs="attributes,quotes"]
+----
+
+$ cat .ssh/config
+Host XSCS
+   User **adminuser used here as example**
+   Hostname **public-ip-of-xscs**
+   Port 22 # a non-standard port would be a good idea
+
+Host hosta
+   User adminuser
+   Hostname **private-ip of host a**
+   Port 22
+   ProxyCommand ssh -q -W %h:%p XSCS
+
+Host hostb
+   User adminuser
+   Hostname **private-ip of host b**
+   Port 22
+   ProxyCommand ssh -q -W %h:%p XSCS
+
+etc...
+----
+
+Now you can simply use something like below to connect to your machines
+
+[subs="attributes,quotes"]
+----
+ssh adminuser@hosta
+----
+or
+[subs="attributes,quotes"]
+----
+ssh adminuser@**private-ip-hosta**
+----
+
+== Legal Notice
+
+Copyright (c)2006–2018 SUSE LLC and contributors. All rights reserved.
+
+Permission is granted to copy, distribute and/or modify this
+document under the terms of the GNU Free Documentation License,
+Version 1.2 or (at your option) version 1.3; with the Invariant
+Section being this copyright notice and license. A copy of the
+license version 1.2 is included in the section entitled "GNU
+Free Documentation License".
+
+SUSE, the SUSE logo and YaST are registered trademarks of SUSE
+LLC in the United States and other countries. For SUSE trademarks,
+see "http://www.suse.com/company/legal/". Linux is a registered
+trademark of Linus Torvalds. All other names or trademarks mentioned
+in this document may be trademarks or registered trademarks of their
+respective owners.
+
+This article is part of a series of documents called "SUSE Best
+Practices". The individual documents in the series were contributed
+voluntarily by SUSE's employees and by third parties.
+
+All information found in this book has been compiled with utmost
+attention to detail. However, this does not guarantee complete
+accuracy.
+
+//Neither SUSE LLC, the authors, nor the translators shall be held liable
+//for possible errors or the consequences thereof.
+
+Therefore, we need to specifically state that neither SUSE LLC,
+its affiliates, the authors, nor the translators may be held liable
+for possible errors or the consequences thereof. Below we draw your
+attention to the license under which the articles are
+published.
+
+include::common_gfdl1.2_i.adoc[]
+

@@ -1,4 +1,4 @@
-# #!/bin/bash
+#!/bin/bash
 #
 ##  build script for docu with asciidoc and daps
 ##  (c) 2018 peters@suse.com
@@ -35,9 +35,9 @@ mkdir -p ./xml ./build
 rm ./xml/$FN.xml
 
 # run asciidoc
-asciidoc --doctype=article --backend=docbook --out-file=./xml/$FN.xml ./$INPUTFILE 
+asciidoc --doctype=article --backend=docbook --out-file=./xml/$FN.xml ./$INPUTFILE
 
-# create DAPS DC file 
+# create DAPS DC file
 cat << EOF > DC-$FN
 MAIN="$FN.xml"
 STYLEROOT="/usr/share/xml/docbook/stylesheet/suse2013-ns"
@@ -48,4 +48,3 @@ daps -d DC-$FN pdf
 
 # show pdf
 evince ./build/$FN/*.pdf
-

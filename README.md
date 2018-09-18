@@ -49,7 +49,6 @@ The documentation of some details of the templates could be found at our public 
 * metadata.json               - Description for github deployment
 
 only for marketplace usage
-=======
 * version.txt                 - Version number of the template
 * createUiDefinition.json     - Frontend for the Marketplace
 * mp_guid.txt                 - Unique Id for Marketplace

@@ -49,11 +49,36 @@ To view the JSON syntax for resources types, see [Define resources in Azure Reso
 * azuredeploy.parameter.json  - Parameterfile for github deployment
 * metadata.json               - Description for github deployment
 
-only for marktetplace
+only for marketplace usage
 * version.txt                 - Version number of the template
 * createUiDefinition.json     - Frontend for the Marketplace
 * mp_guid.txt                 - Unique Id for Marketplace
 * mainTemplate.json           - Temporary file for the Marketplace
+
+Note: When you deploy this template, Microsoft is able to identify the installation of SUSE software with the Azure resources that are deployed. Microsoft is able to correlate the Azure resources that are used to support the software. Microsoft collects this information to provide the best experiences with their products and to operate their business. The data is collected and governed by Microsoft's privacy policies, which can be found at https://www.microsoft.com/trustcenter.
+
+## Template deployment with Azure CLI 2
+
+To authenticate using Azure CLI 2, at a terminal type _az login_ and press ENTER. The authentication process will require you to open a browser to https://aks.ms/devicelogin and enter a code (provided by the CLI). Afterwards, you will be able to authenticate to Azure using your normal Azure subscription credentials.
+
+Azure CLI 2 does not prompt for missing/mandatory parameters so you have to specify all your parameters when you invoke the command to start the deployment. You can provide all the parameters inline on the command line or using a parameters file (azuredeploy.parameter.json). You can't use a combination of these. As we already prepared parameter files for all scenarios, we use them here.
+
+So, before proceeding, please update the azuredeploy.parameters.json file to include/change your values for all parameters whithin the file.
+
+All Azure deployments are within a _resource group_, therefore we need to create one or use a existing.
+
+The example below will create a new one (RGFirstTest)
+
+
+    # Create a resource group
+    az group create --name RGFirstTest --location westeurope
+
+    # Deploy template into resource group
+    az group deployment create \
+    --resource-group RGFirstTest \
+    --template-file <path to template file>\azuredeploy.json \
+    --parameters <path to template parameters file>\azuredeploy.parameters.json
+
 
 ## Contribution
 If you would like to contribute, please fork this repository and *send pull requests*.
@@ -63,5 +88,6 @@ If you would like to contribute, please fork this repository and *send pull requ
 >**Please do not make any commits to the `master` branch** as `master` is reserved for releases only.
 >
 >**Always commit to `develop`**
+
 
 Have a lot of fun...

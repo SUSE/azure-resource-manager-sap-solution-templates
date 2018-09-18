@@ -54,11 +54,11 @@
             "defaultValue": true
         },
         "vnetResourceGroup": {
-            "defaultValue": "[resourceGroup().name]",
+            "defaultValue": "RG",
             "type": "string"
         },        
         "addressPrefixes": {
-            "defaultValue": "10.0.0.0/16",
+            "defaultValue": "10.0.0.0/24",
             "type": "array"
         },
         "subnetName": {
@@ -108,8 +108,7 @@
                 "keyData": "[parameters('sshKeyData')]"
             }
         ],
-        "sshKeysArrayEmpty": [
-        ],
+        "sshKeysArrayEmpty": [],
         "sshKeysArray": "[if(equals(length(parameters('sshKeyData')), 0), variables('sshKeysArrayEmpty'), variables('sshKeysArrayKey'))]",
         "internalSubnetId": "[resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('subnetName'))]",
         "images": {
@@ -380,7 +379,7 @@
             "name": "pid-01afcbdc-d715-44d9-b145-b0be90d9dff5",
             "type": "Microsoft.Resources/deployments",
             "properties": {
-                "mode":"Incremental",
+                "mode": "Incremental",
                 "template": {
                     "$schema": "https://schema.managment.azure.com/schemas/2015-01-01/deploymentTemplate.json",
                     "contentVersion": "1.0.0.0",

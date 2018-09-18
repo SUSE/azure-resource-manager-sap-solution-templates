@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "location": {
-            "value": "string"
+            "value": "westeurope"
         },
         "sapSystemId": {
             "value": "TST"
@@ -15,7 +15,7 @@
             "value": "Demo"
         },
         "adminUsername": {
-            "value": "<Username for the Virtual Machine>"
+            "value": "GEN-USERNAME"
         },
         "adminPassword": {
             "value": "GEN-PASSWORD"
@@ -24,13 +24,15 @@
             "value": ""
         },
         "createVNET": {
-            "value": "true"
+            "value": true
         },
         "vnetResourceGroup": {
             "value": "RG"
         },        
         "addressPrefixes": {
-            "value": "10.0.0.0/16"
+            "value":  [
+                "10.0.0.0/24" 
+            ]
         },
         "subnetName": {
             "value": "subnet"
@@ -55,9 +57,6 @@
         },
         "hanaVMSize": {
             "value": "Standard_E4s_v3"
-        },
-        "_SUSETags": {
-            "value": "b0d27bab-bf43-4cad-9bf5-40a8041d59b8"
         }
     }
 }

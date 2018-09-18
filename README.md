@@ -78,6 +78,7 @@ The example below will create a new resource group (RGFirstTest)
     --template-file <path to template file>\azuredeploy.json \
     --parameters <path to template parameters file>\azuredeploy.parameters.json
 
+    Note: You need to adapt the name of the resourcegroup and the location in the parameterfile to what you had used
 
 ## Contribution
 If you would like to contribute, please fork this repository and *send pull requests*.

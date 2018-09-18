@@ -25,9 +25,8 @@ We provide within this repository the sources of the marketplace solution templa
 The documentation of some details of the templates could be found at our public documentation of [SUSE Best Practices](https://www.suse.com/documentation/suse-best-practices/sbp-sap-msazure-solution-templates/data/sbp-sap-msazure-solution-templates.html)
 
 ## Azure articles
-To learn more about the format of the template and how you construct it, see
-[Create your first Azure Resource Manager template](https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-manager-create-first-template).
-To view the JSON syntax for resources types, see [Define resources in Azure Resource Manager templates](https://docs.microsoft.com/en-us/azure/templates/).
+* To learn more about the format of the template and how you construct it, see [Create your first Azure Resource Manager template] (https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-manager-create-first-template).
+* To view the JSON syntax for resources types, see [Define resources in Azure Resource Manager templates](https://docs.microsoft.com/en-us/azure/templates/).
 
 ## Future Development ideas
 * on the HA setup deploy the pacemaker infrastructure
@@ -38,8 +37,8 @@ To view the JSON syntax for resources types, see [Define resources in Azure Reso
 ### Overall structure
 
 * xTier                        - the solution templates
-* docu                         - documentation of some backgrounds
-* for_marketplace              - temporary for creating Azure Marketplace offering
+* docu                         - documentation of some background information
+* for_marketplace              - temporary for creating Azure Marketplace offering (not tracked in github)
 * scripts                      - Scripts used in the templates for setup the infrastructure
 * tools                        - some helper tools
 
@@ -63,11 +62,11 @@ To authenticate using Azure CLI 2, at a terminal type _az login_ and press ENTER
 
 Azure CLI 2 does not prompt for missing/mandatory parameters so you have to specify all your parameters when you invoke the command to start the deployment. You can provide all the parameters inline on the command line or using a parameters file (azuredeploy.parameter.json). You can't use a combination of these. As we already prepared parameter files for all scenarios, we use them here.
 
-So, before proceeding, please update the azuredeploy.parameters.json file to include/change your values for all parameters whithin the file.
+So, before proceeding, please update the _azuredeploy.parameters.json_ file to include/change your values for the needed parameters.
 
 All Azure deployments are within a _resource group_, therefore we need to create one or use a existing.
 
-The example below will create a new one (RGFirstTest)
+The example below will create a new resource group (RGFirstTest)
 
 
     # Create a resource group

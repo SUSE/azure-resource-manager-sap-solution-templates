@@ -48,11 +48,8 @@ The documentation of some details of the templates could be found at our public 
 * azuredeploy.parameter.json  - Parameterfile for github deployment
 * metadata.json               - Description for github deployment
 
-<<<<<<< HEAD
 only for marketplace usage
 =======
-only for marktetplace
->>>>>>> 953623db04468cd6b0df8d44867a2886d35cacda
 * version.txt                 - Version number of the template
 * createUiDefinition.json     - Frontend for the Marketplace
 * mp_guid.txt                 - Unique Id for Marketplace

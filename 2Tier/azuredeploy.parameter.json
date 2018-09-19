@@ -2,9 +2,6 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "location": {
-            "value": "westeurope"
-        },
         "sapSystemId": {
             "value": "TST"
         },
@@ -15,23 +12,20 @@
             "value": "Demo"
         },
         "adminUsername": {
-            "value": "GEN-USERNAME"
+            "value": "pschinagl"
         },
         "adminPassword": {
-            "value": "GEN-PASSWORD"
+            "value": "SuSELinux2018;"
         },
         "sshKeyData": {
             "value": ""
         },
         "createVNET": {
             "value": true
-        },
-        "vnetResourceGroup": {
-            "value": "RG"
-        },        
+        },      
         "addressPrefixes": {
             "value":  [
-                "10.0.0.0/24" 
+                "10.0.0.0/16" 
             ]
         },
         "subnetName": {

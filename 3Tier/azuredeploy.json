@@ -3,6 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "location": {
+            "defaultValue": "[resourceGroup().location]",            
             "type": "string"
         },
         "sapSystemId": {
@@ -58,7 +59,7 @@
             "type": "string"
         },
         "addressPrefixes": {
-            "defaultValue": "10.0.0.0/16",
+            "defaultValue": "10.0.0.0/24",
             "type": "array"
         },
         "subnetName": {
@@ -533,8 +534,7 @@
             },
             "properties": {
                 "addressSpace": {
-                    "addressPrefixes": 
-                        "[parameters('addressPrefixes')]"                    
+                    "addressPrefixes": "[parameters('addressPrefixes')]"                    
                 },
                 "subnets": [
                     {

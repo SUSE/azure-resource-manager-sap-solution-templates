@@ -2,9 +2,6 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "location": {
-            "value": "string"
-        },
         "sapSystemId": {
             "value": "TST"
         },
@@ -15,7 +12,7 @@
             "value": "Demo"
         },
         "adminUsername": {
-            "value": "<Username for the Virtual Machine>"
+            "value": "GEN-UNAME"
         },
         "adminPassword": {
             "value": "GEN-PASSWORD"
@@ -24,13 +21,12 @@
             "value": ""
         },
         "createVNET": {
-            "value": "true"
-        },
-        "vnetResourceGroup": {
-            "value": "RG"
+            "value": true
         },
         "addressPrefixes": {
-            "value": "10.0.0.0/16"
+            "value": [
+                "10.0.0.0/16"
+            ]
         },
         "subnetName": {
             "value": "subnet"
@@ -78,10 +74,7 @@
             "defaultValue": "Standard_D2s_v3"
         },
         "appsVMCount": {
-            "value" 2
-        },
-        "_SUSETags": {
-            "value": "b0d27bab-bf43-4cad-9bf5-40a8041d59b8"
+            "value": 2
         }
     }
 }

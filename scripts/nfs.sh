@@ -40,17 +40,15 @@ function createlvm()
   vgName=$2
   lvName=$3
 
-  arraynum=${#lunsA[@]}
-  log "count $arraynum"
-  
+  lunsCount=${#lunsA[@]}
+    
   log "createlvm - creating lvm"
 
   numRaidDevices=0
   raidDevices=""
-  num=${#lunsA[@]}
-  log "num luns $num"
+  log "num luns $lunsCount"
   
-  for ((i=0; i<num; i++))
+  for ((i=0; i<lunsCount; i++))
   do
     log "trying to find device path"
     lun=${lunsA[$i]}
@@ -63,7 +61,7 @@ function createlvm()
       numRaidDevices=$((numRaidDevices + 1))
       raidDevices="$raidDevices $devicePath "
     else
-      log "no device path for LUN $lun"
+      log " no device path for LUN $lun"
       exit -1;
     fi
   done
@@ -71,10 +69,13 @@ function createlvm()
   log "num: $numRaidDevices paths: '$raidDevices'"
   $(pvcreate $raidDevices)
   $(vgcreate $vgName $raidDevices)
+
   $(lvcreate --extents 100%FREE --stripes $numRaidDevices --name $lvName $vgName)
 
   log "createlvm done"
 }
+
+#MAIN
 
 log $@
 

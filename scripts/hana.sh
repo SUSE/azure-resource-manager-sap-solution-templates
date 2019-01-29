@@ -36,8 +36,8 @@ function addtofstab()
 
 function getdevicepath()
 {
-
   log "getdevicepath"
+
   getdevicepathresult=""
   local lun=$1
   local readlinkOutput=$(readlink /dev/disk/azure/scsi1/lun$lun)
@@ -55,24 +55,26 @@ function getdevicepath()
     exit -1;
   fi
   log "getdevicepath done"
-
 }
 
 function createlvm()
 {
-  
   log "createlvm"
 
   local lunsA=(${1//,/ })
   local vgName=$2
   local lvName=$3
+
+  local lunsCount=${#lunsA[@]}
+
   local mountPathA=(${4//,/ })
   local sizeA=(${5//,/ })
 
-  local lunsCount=${#lunsA[@]}
   local mountPathCount=${#mountPathA[@]}
   local sizeCount=${#sizeA[@]}
+
   log "count $lunsCount $mountPathCount $sizeCount"
+
   if [[ $lunsCount -gt 1 ]]
   then
     log "createlvm - creating lvm"
@@ -94,7 +96,7 @@ function createlvm()
         numRaidDevices=$((numRaidDevices + 1))
         raidDevices="$raidDevices $devicePath "
       else
-        log "no device path for LUN $lun"
+        log " no device path for LUN $lun"
         exit -1;
       fi
     done
@@ -141,6 +143,34 @@ function createlvm()
   log "createlvm done"
 }
 
+function installPackages()
+{
+   log "installPackages start"
+
+   # update everything
+   zypper update -y
+   # install pattern
+   zypper install pattern -y sap-hana
+   #install packages
+   zypper install -y saptune
+   
+   log "installPackages done"
+}
+
+function enableSwap()
+{
+  log "enableSwap start"
+  
+  sed -i.bak "s/ResourceDisk.EnableSwap=n/ResourceDisk.EnableSwap=y/" /etc/waagent.conf 
+  sed -i.bak "s/ResourceDisk.SwapSizeMB=0/ResourceDisk.SwapSizeMB=2048/" /etc/waagent.conf
+  
+  #service waagent restart
+
+  log "enableSwap done"
+  
+}
+# MAIN
+
 log $@
 
 luns=""
@@ -148,7 +178,7 @@ names=""
 paths=""
 sizes=""
 
-while true; 
+while [ $# != 0]; 
 do
   case "$1" in
     "-luns")  luns=$2;shift 2;log "found luns"
@@ -162,12 +192,9 @@ do
     *) log "unknown parameter $1";shift 1;
     ;;
   esac
-
-  if [[ -z "$1" ]];
-  then 
-    break; 
-  fi
 done
+
+log "running with $luns $names $paths $sizes" 
 
 lunsSplit=(${luns//#/ })
 namesSplit=(${names//#/ })
@@ -196,5 +223,12 @@ then
 else
   log "count not equal"
 fi
+
+installPackages
+
+saptune solution apply HANA
+saptune daemon start
+
+enableSwap
 
 exit

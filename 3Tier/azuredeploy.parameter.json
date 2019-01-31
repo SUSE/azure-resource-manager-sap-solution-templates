@@ -50,28 +50,28 @@
             "value": "app-vm"
         },
         "xscsPIPName": {
-            "defaultValue": "sap-pip"
+            "value": "sap-pip"
         },
         "xscsNICName": {
-            "defaultValue": "sap-nic"
+            "value": "sap-nic"
         },
         "xscsVMName": {
-            "defaultValue": "sap-vm"
+            "value": "sap-vm"
         },
         "hNICName": {
-            "defaultValue": "hana-nic"
+            "value": "hana-nic"
         },
         "hVMName": {
-            "defaultValue": "hana-vm"
+            "value": "hana-vm"
         },
         "hanaVMSize": {
             "value": "Standard_E4s_v3"
         },
         "xscsVMSize": {
-            "defaultValue": "Standard_D2s_v3"
+            "value": "Standard_D2s_v3"
         },
         "appsVMSize": {
-            "defaultValue": "Standard_D2s_v3"
+            "value": "Standard_D2s_v3"
         },
         "appsVMCount": {
             "value": 2

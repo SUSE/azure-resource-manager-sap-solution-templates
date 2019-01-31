@@ -71,16 +71,16 @@
             "value": "sap-av"
         },
         "xscsPIPName": {
-            "defaultValue": "sap-pip"
+            "value": "sap-pip"
         },
         "xscsNICName": {
-            "defaultValue": "sap-nic"
+            "value": "sap-nic"
         },
         "xscsLoadBalancerName": {
-            "defaultValue": "sap-lb"
+            "value": "sap-lb"
         },
         "xscsVMName": {
-            "defaultValue": "sap-vm"
+            "value": "sap-vm"
         },
         "ascsInstanceNumber": {
             "value": 0

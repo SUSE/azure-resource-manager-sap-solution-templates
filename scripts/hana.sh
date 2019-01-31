@@ -4,7 +4,8 @@ function log()
 {
   message=$@
   echo "$message"
-  echo "$message" >> /var/log/sapconfigcreate
+  #echo "$(date -Iseconds): $message" >> /var/log/sapconfigcreate
+  echo "$(date -Iseconds): $message" >> /tmp/sapconfigcreate
 }
 
 function addtofstab()
@@ -18,16 +19,16 @@ function addtofstab()
   if [[ $blkid =~  UUID=\"(.{36})\" ]]
   then
   
-    log "Adding fstab entry"
+    log " Adding fstab entry"
     local uuid=${BASH_REMATCH[1]};
     local mountCmd=""
-    log "adding fstab entry"
+    log " adding fstab entry"
     mountCmd="/dev/disk/by-uuid/$uuid $mount xfs  defaults,nofail  0  2"
     echo "$mountCmd" >> /etc/fstab
     $(mount $partPath $mount)
   
   else
-    log "no UUID found"
+    log "ERR: no UUID found"
     exit -1;
   fi
   
@@ -36,6 +37,17 @@ function addtofstab()
 
 function getdevicepath()
 {
+  # Azure create an additional entry below /dev/disk/
+  # which links to the 
+  # /dev/disk/azure 
+  #  /dev/disk/azure/root
+  #  /dev/disk/azure/resource
+  #  /dev/disk/azure/scsi1  
+  # /dev/disk/by-id  
+  # /dev/disk/by-label
+  # /dev/disk/by-path
+  # /dev/disk/by-uuid
+
   log "getdevicepath"
 
   getdevicepathresult=""
@@ -44,14 +56,14 @@ function getdevicepath()
   local scsiOutput=$(lsscsi)
   if [[ $readlinkOutput =~ (sd[a-zA-Z]{1,2}) ]];
   then
-    log "found device path using readlink"
+    log " found device path using readlink"
     getdevicepathresult="/dev/${BASH_REMATCH[1]}";
   elif [[ $scsiOutput =~ \[5:0:0:$lun\][^\[]*(/dev/sd[a-zA-Z]{1,2}) ]];
   then
-    log "found device path using lsscsi"
+    log " found device path using lsscsi"
     getdevicepathresult=${BASH_REMATCH[1]};
   else
-    log "lsscsi output not as expected for $lun"
+    log " ERR: :lsscsi output not as expected for $lun"
     exit -1;
   fi
   log "getdevicepath done"
@@ -73,19 +85,19 @@ function createlvm()
   local mountPathCount=${#mountPathA[@]}
   local sizeCount=${#sizeA[@]}
 
-  log "count $lunsCount $mountPathCount $sizeCount"
+  log " count $lunsCount $mountPathCount $sizeCount"
 
   if [[ $lunsCount -gt 1 ]]
   then
-    log "createlvm - creating lvm"
+    log " createlvm - creating lvm"
 
     local numRaidDevices=0
     local raidDevices=""
-    log "num luns $lunsCount"
+    log " num luns $lunsCount"
     
     for ((i=0; i<lunsCount; i++))
     do
-      log "trying to find device path"
+      log " trying to find device path"
       local lun=${lunsA[$i]}
       getdevicepath $lun
       local devicePath=$getdevicepathresult;
@@ -101,7 +113,7 @@ function createlvm()
       fi
     done
 
-    log "num: $numRaidDevices paths: '$raidDevices'"
+    log " num: $numRaidDevices paths: '$raidDevices'"
     $(pvcreate $raidDevices)
     $(vgcreate $vgName $raidDevices)
 
@@ -118,7 +130,7 @@ function createlvm()
     done
 
   else
-    log "createlvm - creating single disk"
+    log " createlvm - creating single disk"
 
     local lun=${lunsA[0]}
     local mountPathLoc=${mountPathA[0]}
@@ -135,7 +147,7 @@ function createlvm()
 
       addtofstab $partPath $mountPathLoc
     else
-      log "no device path for LUN $lun"
+      log " ERR: no device path for LUN $lun"
       exit -1;
     fi
   fi
@@ -169,32 +181,41 @@ function enableSwap()
   log "enableSwap done"
   
 }
-# MAIN
 
+################
+# ### MAIN ### #
+################
 log $@
 
+# example input 
+#
+#  -luns "0,1#2,3#4#5#6#7"
+#  -names "data#log#shared#usrsap#backup#sapmnt"
+#  -paths "/hana/data#/hana/log#/hana/shared#/usr/sap#/hana/backup#/sapmnt/ABC"
+#  -sizes "100#100#100#100#100#100"
+#
 luns=""
 names=""
 paths=""
 sizes=""
 
-while [ $# != 0]; 
+while [ $# != 0 ];
 do
   case "$1" in
-    "-luns")  luns=$2;shift 2;log "found luns"
+    "-luns")  luns=$2;shift 2;log " found luns"
     ;;
-    "-names")  names=$2;shift 2;log "found names"
+    "-names")  names=$2;shift 2;log " found names"
     ;;
-    "-paths")  paths=$2;shift 2;log "found paths"
+    "-paths")  paths=$2;shift 2;log " found paths"
     ;;
-    "-sizes")  sizes=$2;shift 2;log "found sizes"
+    "-sizes")  sizes=$2;shift 2;log " found sizes"
     ;;
-    *) log "unknown parameter $1";shift 1;
+    *) log "ERR:unknown parameter $1";shift 1;
     ;;
   esac
 done
 
-log "running with $luns $names $paths $sizes" 
+log " running with $luns $names $paths $sizes" 
 
 lunsSplit=(${luns//#/ })
 namesSplit=(${names//#/ })
@@ -206,7 +227,7 @@ namesCount=${#namesSplit[@]}
 pathsCount=${#pathsSplit[@]}
 sizesCount=${#sizesSplit[@]}
 
-log "count $lunsCount $namesCount $pathsCount $sizesCount"
+log " count $lunsCount $namesCount $pathsCount $sizesCount"
 
 if [[ $lunsCount -eq $namesCount && $namesCount -eq $pathsCount && $pathsCount -eq $sizesCount ]]
 then
@@ -217,11 +238,12 @@ then
     path=${pathsSplit[$ipart]}
     size=${sizesSplit[$ipart]}
 
-    log "creating disk with $lun $name $path $size"
+    log " creating disk with LUN: $lun VG: $name PATH: $path SIZE: $size"
     createlvm $lun "vg-$name" "lv-$name" "$path" "$size";
   done
 else
-  log "count not equal"
+  log "ERR: Input parameter count not equal"
+  exit 1
 fi
 
 installPackages

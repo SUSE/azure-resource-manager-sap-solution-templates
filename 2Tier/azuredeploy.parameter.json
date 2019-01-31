@@ -12,10 +12,10 @@
             "value": "Demo"
         },
         "adminUsername": {
-            "value": "pschinagl"
+            "value": "GEN-USERNAME"
         },
         "adminPassword": {
-            "value": "SuSELinux2018;"
+            "value": "GEN-PASSWORD"
         },
         "sshKeyData": {
             "value": ""

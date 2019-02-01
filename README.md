@@ -82,7 +82,7 @@ The example below will create a new resource group (RGFirstTest)
 
 A good idea is therefore to test the template and parameter values without actually deploying them. For this you can use the command _az group deployment validate_
 
-    az group deployment *validate* \
+    az group deployment validate \
     --resource-group RGFirstTest \
     --template-file <path to template file>\azuredeploy.json \
     --parameters <path to template parameters file>\azuredeploy.parameters.json
@@ -90,7 +90,7 @@ A good idea is therefore to test the template and parameter values without actua
 If all is successful the template can now created and deployed
 
     # Deploy template into resource group
-    az group deployment *create* \
+    az group deployment create \
     --resource-group RGFirstTest \
     --template-file <path to template file>\azuredeploy.json \
     --parameters <path to template parameters file>\azuredeploy.parameters.json

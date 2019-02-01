@@ -1,4 +1,7 @@
 #!/bin/bash
+#
+## create all hana partitions depending on input parameter from ARM template
+#
 
 function log()
 {
@@ -37,12 +40,13 @@ function addtofstab()
 
 function getdevicepath()
 {
-  # Azure create an additional entry below /dev/disk/
+  # Azure does create an additional entry below /dev/disk/
   # which links to the 
   # /dev/disk/azure 
-  #  /dev/disk/azure/root
-  #  /dev/disk/azure/resource
-  #  /dev/disk/azure/scsi1  
+  #   /dev/disk/azure/root
+  #   /dev/disk/azure/resource
+  #   /dev/disk/azure/scsi1  
+  #     /dev/disk/azure/scsi1/lun0
   # /dev/disk/by-id  
   # /dev/disk/by-label
   # /dev/disk/by-path
@@ -89,7 +93,7 @@ function createlvm()
 
   if [[ $lunsCount -gt 1 ]]
   then
-    log " createlvm - creating lvm"
+    log " creating lvm devices"
 
     local numRaidDevices=0
     local raidDevices=""
@@ -130,7 +134,7 @@ function createlvm()
     done
 
   else
-    log " createlvm - creating single disk"
+    log " creating single disk"
 
     local lun=${lunsA[0]}
     local mountPathLoc=${mountPathA[0]}
@@ -199,6 +203,14 @@ names=""
 paths=""
 sizes=""
 
+numpara=0
+
+if [ $# -eq 0 ]
+then
+  echo "No parameters provided";
+  exit 2;
+fi
+
 while [ $# != 0 ];
 do
   case "$1" in
@@ -210,10 +222,17 @@ do
     ;;
     "-sizes")  sizes=$2;shift 2;log " found sizes"
     ;;
-    *) log "ERR:unknown parameter $1";shift 1;
+    *) log "ERR:unknown parameter $1";shift 1; numpara=1
     ;;
   esac
 done
+
+if [ $numpara -ne 0 ]
+then
+  echo "Wrong parameters provided";
+  exit 2;
+
+fi
 
 log " running with $luns $names $paths $sizes" 
 

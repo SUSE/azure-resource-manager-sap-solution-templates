@@ -85,7 +85,7 @@ A good idea is therefore to test the template and parameter values without actua
     az group deployment validate \
     --resource-group RGFirstTest \
     --template-file <path to template file>\azuredeploy.json \
-    --parameters <path to template parameters file>\azuredeploy.parameters.json
+    --parameters <path to template parameters file>\azuredeploy.parameter.json
 
 If all is successful the template can now created and deployed
 
@@ -93,7 +93,7 @@ If all is successful the template can now created and deployed
     az group deployment create \
     --resource-group RGFirstTest \
     --template-file <path to template file>\azuredeploy.json \
-    --parameters <path to template parameters file>\azuredeploy.parameters.json
+    --parameters <path to template parameters file>\azuredeploy.parameter.json
 
     Note: You need to adapt the name of the resourcegroup and the location in the parameterfile to what you had used
 

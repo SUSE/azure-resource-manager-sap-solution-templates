@@ -110,7 +110,7 @@
                         "count": 1,
                         "visible": true
                     },
-					{
+		{
                 "name": "suseOsImage",
                 "type": "Microsoft.Common.DropDown",
                 "label": "SUSE OS Image",

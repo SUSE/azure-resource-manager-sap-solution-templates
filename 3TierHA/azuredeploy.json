@@ -13,9 +13,12 @@
         "osType": {
             "type": "string",
             "allowedValues": [
-                "SLES for SAP 12 SP3 (Premium)"
+                    "SLES for SAP 12 SP3",
+                    "SLES for SAP 12 SP4",
+                    "SLES for SAP 15",
+                    "SLES for SAP 15 SP1"
             ],
-            "defaultValue": "SLES for SAP 12 SP3 (Premium)",
+            "defaultValue": "SLES for SAP 12 SP4",
             "metadata": {
                 "description": "The type of the operating system you want to deploy."
             }
@@ -211,12 +214,14 @@
         ],
         "sshKeysArrayEmpty": [
         ],
+        "imageSku" :  "[if(equals(parameters('osType'), 'SLES for SAP 15 SP1'), 'gen1', if(equals(parameters('osType'), 'SLES for SAP 15'), '15', if(equals(parameters('osType'), 'SLES for SAP 12 SP4'), '12-SP4', if(equals(parameters('osType'), 'SLES for SAP 12 SP3'), '12-SP3', '12-SP4'))))]",
+        "imageOffer" : "[if(equals(parameters('osType'), 'SLES for SAP 15 SP1'), 'sles-sap-15-sp1', 'SLES-SAP')]",
         "sshKeysArray": "[if(equals(length(parameters('sshKeyData')), 0), variables('sshKeysArrayEmpty'), variables('sshKeysArrayKey'))]",
         "internalSubnetId": "[resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('subnetName'))]",
         "lbrulePrefix": "lb-",
         "images": {
-            "SLES for SAP 12 SP3 (Premium)": {
-                "sku": "12-SP3",
+            "SLES for SAP 12 SP4": {
+                "sku": "12-SP4",
                 "offer": "SLES-SAP",
                 "publisher": "SUSE",
                 "version": "latest",
@@ -1247,9 +1252,9 @@
                 },
                 "storageProfile": {
                     "imageReference": {
-                        "publisher": "[variables('images')[parameters('osType')].publisher]",
-                        "offer": "[variables('images')[parameters('osType')].offer]",
-                        "sku": "[variables('images')[parameters('osType')].sku]",
+                        "publisher": "SUSE",
+                        "offer": "[variables('imageOffer')]",
+                        "sku": "[variables('imageSku')]",
                         "version": "latest"
                     },
                     "osDisk": {

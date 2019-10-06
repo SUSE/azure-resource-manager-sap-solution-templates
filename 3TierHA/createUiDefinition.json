@@ -128,7 +128,7 @@
                         "imageReference": {
                             "publisher": "SUSE",
                             "offer": "SLES-SAP",
-                            "sku": "12-SP3"
+                            "sku": "12-SP4"
                         },
                         "count": 2,
                         "visible": true
@@ -150,7 +150,7 @@
                         "imageReference": {
                             "publisher": "SUSE",
                             "offer": "SLES-SAP",
-                            "sku": "12-SP3"
+                            "sku": "12-SP4"
                         },
                         "count": 2,
                         "visible": true
@@ -172,7 +172,7 @@
                         "imageReference": {
                             "publisher": "SUSE",
                             "offer": "SLES-SAP",
-                            "sku": "12-SP3"
+                            "sku": "12-SP4"
                         },
                         "count": "[parse(steps('SAPConfig').deploymentSize).appsVMCount]",                         "visible": true
                     },
@@ -193,11 +193,42 @@
                         "imageReference": {
                             "publisher": "SUSE",
                             "offer": "SLES-SAP",
-                            "sku": "12-SP3"
+                            "sku": "12-SP4"
                         },
                         "count": 2,
                         "visible": true
-                    }
+                    },
+                    {
+                        "name": "suseOsImage",
+                        "type": "Microsoft.Common.DropDown",
+                        "label": "SUSE OS Image",
+                        "defaultValue": "SUSE 12 SP3",
+                        "toolTip": "Please select SUSE OS version image",
+                        "constraints": {
+                        "required": true,
+                          "allowedValues": [
+                            {
+                                "label": "SLES for SAP 12 SP3",
+                                "value": "{\"imageName\":\"SLES for SAP 12 SP3\"}"
+                            },
+                            {
+                                "label": "SLES for SAP 12 SP4",
+                                "value": "{\"imageName\":\"SLES for SAP 12 SP4\"}"
+                            },
+                            {
+                                "label": "SLES for SAP 15",
+                                "value": "{\"imageName\":\"SLES for SAP 15\"}"
+                            },
+                            {
+                                "label": "SLES for SAP 15 SP1",
+                                "value": "{\"imageName\":\"SLES for SAP 15 SP1\"}"
+                            }
+                          ]                
+                          
+                        },
+                         "visible": true
+        
+                        }
                 ]
             },
             {
@@ -253,7 +284,7 @@
             "location": "[location()]",
 
             "sapSystemId": "[steps('SAPConfig').sapSystemId]",
-            "osType": "SLES for SAP 12 SP3 (Premium)",
+            "osType": "[parse(steps('VMSizes').suseOsImage).imageName]",
             "size": "[parse(steps('SAPConfig').deploymentSize).size]",
             "stackType": "[steps('SAPConfig').stackType]",
 

@@ -106,6 +106,7 @@
     },
     "variables": {
         "sshKeyPath": "[concat('/home/',parameters('adminUsername'),'/.ssh/authorized_keys')]",
+        
         "sshKeysArrayKey": [
             {
                 "path": "[variables('sshKeyPath')]",

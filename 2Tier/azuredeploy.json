@@ -3,6 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "location": {
+            "defaultValue": "[resourceGroup().location]",
             "type": "string"
         },
         "sapSystemId": {
@@ -57,7 +58,7 @@
             "defaultValue": true
         },
         "vnetResourceGroup": {
-            "defaultValue": "RG",
+            "defaultValue": "[resourceGroup().name]",
             "type": "string"
         },        
         "addressPrefixes": {

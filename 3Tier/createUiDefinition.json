@@ -89,6 +89,38 @@
                 "bladeTitle": "VM Sizes Configuration",
                 "elements": [
                     {
+                        "name": "suseOsImage",
+                        "type": "Microsoft.Common.DropDown",
+                        "label": "SUSE OS Image",
+                        "defaultValue": "SLES for SAP 12 SP4",
+                        "toolTip": "Please select SUSE OS version image",
+                        "constraints": {
+						  "required": true,
+                          "allowedValues": [
+                            
+                            {
+                                "label": "SLES for SAP 15 SP1",
+                                "value": "{\"imageName\":\"SLES for SAP 15 SP1\"}"
+                            },
+							{
+                                "label": "SLES for SAP 15",
+                                "value": "{\"imageName\":\"SLES for SAP 15\"}"
+                            },
+							{
+                                "label": "SLES for SAP 12 SP4",
+                                "value": "{\"imageName\":\"SLES for SAP 12 SP4\"}"
+                            },
+							{
+                                "label": "SLES for SAP 12 SP3",
+                                "value": "{\"imageName\":\"SLES for SAP 12 SP3\"}"
+                            }
+                            
+                          ]                
+                         
+                        },
+                         "visible": true
+                       },
+                    {
                         "name": "hanaVMSize",
                         "type": "Microsoft.Compute.SizeSelector",
                         "label": "HANA VM Size",
@@ -105,7 +137,7 @@
                         "imageReference": {
                             "publisher": "SUSE",
                             "offer": "SLES-SAP",
-                            "sku": "12-SP3"
+                            "sku": "[if(equals(parse(steps('VMSizes').suseOsImage).imageName, 'SLES for SAP 15 SP1'), 'gen1', if(equals(parse(steps('VMSizes').suseOsImage).imageName, 'SLES for SAP 15'), '15', if(equals(parse(steps('VMSizes').suseOsImage).imageName, 'SLES for SAP 12 SP4'), '12-SP4', if(parse(steps('VMSizes').suseOsImage).imageName, 'SLES for SAP 12 SP3'), '12-SP3', '12-SP4'))))]"
                         },
                         "count": 1,
                         "visible": true
@@ -127,7 +159,7 @@
                         "imageReference": {
                             "publisher": "SUSE",
                             "offer": "SLES-SAP",
-                            "sku": "12-SP3"
+                            "sku": "[if(equals(parse(steps('VMSizes').suseOsImage).imageName, 'SLES for SAP 15 SP1'), 'gen1', if(equals(parse(steps('VMSizes').suseOsImage).imageName, 'SLES for SAP 15'), '15', if(equals(parse(steps('VMSizes').suseOsImage).imageName, 'SLES for SAP 12 SP4'), '12-SP4', if(parse(steps('VMSizes').suseOsImage).imageName, 'SLES for SAP 12 SP3'), '12-SP3', '12-SP4'))))]"
                         },
                         "count": 1,
                         "visible": true
@@ -149,13 +181,13 @@
                         "imageReference": {
                             "publisher": "SUSE",
                             "offer": "SLES-SAP",
-                            "sku": "12-SP3"
+                            "sku": "[if(equals(parse(steps('VMSizes').suseOsImage).imageName, 'SLES for SAP 15 SP1'), 'gen1', if(equals(parse(steps('VMSizes').suseOsImage).imageName, 'SLES for SAP 15'), '15', if(equals(parse(steps('VMSizes').suseOsImage).imageName, 'SLES for SAP 12 SP4'), '12-SP4', if(parse(steps('VMSizes').suseOsImage).imageName, 'SLES for SAP 12 SP3'), '12-SP3', '12-SP4'))))]"
                         },
                         "count": "[parse(steps('SAPConfig').deploymentSize).appsVMCount]"
                             ,
                         "visible": true
                     }
-                ]
+                                   ]
             },            
             {
                 "name": "networkConfig",
@@ -210,7 +242,7 @@
             "location": "[location()]",
 
             "sapSystemId": "[steps('SAPConfig').sapSystemId]",
-            "osType": "SLES for SAP 12 SP3 (Premium)",
+            "osType": "[parse(steps('VMSizes').suseOsImage).imageName]",
             "size": "[parse(steps('SAPConfig').deploymentSize).size]",
 
             "adminUsername": "[basics('adminUsername')]",

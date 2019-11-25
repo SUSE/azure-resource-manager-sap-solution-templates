@@ -22,7 +22,7 @@ Example:
   "commandToExecute": "[concat('while [ ! -f /var/lib/waagent/CustomData ]; do sleep 1; done;sleep 10;cat /var/lib/waagent/CustomData | base64 --decode | sh -s -- ', variables('sizes')[parameters('size')].hana.scriptArguments)]"
 }
 
-encode: cat /tmp/sourcefile |base64 --encode > /tmp/outfile
+encode: cat /tmp/sourcefile |base64 -w0 > /tmp/outfile
 decode: cat /tmp/outfile |base64 --decode > /tmp/sourcefile
 
 app.sh  - only a logger right now

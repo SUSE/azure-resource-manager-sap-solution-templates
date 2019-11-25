@@ -1,4 +1,9 @@
 #!/bin/bash
+exec 3>&1 4>&2
+trap 'exec 2>&4 1>&3' 0 1 2 3
+exec 1>/var/log/template_debug.out 2>&1
+# Everything below will go to the file 'log.out':
+
 #
 ## create all hana partitions depending on input parameter from ARM template
 #
@@ -7,35 +12,33 @@ function log()
 {
   message=$@
   echo "$message"
-  #echo "$(date -Iseconds): $message" >> /var/log/sapconfigcreate
+  echo "$(date -Iseconds): $message" >> /var/log/sapconfigcreate
   echo "$(date -Iseconds): $message" >> /tmp/sapconfigcreate
 }
 
 function addtofstab()
 {
-  log "addtofstab"
+  log "    ->addtofstab"
   partPath=$1
   mount=$2
   
   local blkid=$(/sbin/blkid $partPath)
-  
+  log "    Using blkid: $blkid"
+
   if [[ $blkid =~  UUID=\"(.{36})\" ]]
   then
-  
-    log " Adding fstab entry"
+    log "    Adding fstab entry with UUID"
     local uuid=${BASH_REMATCH[1]};
     local mountCmd=""
-    log " adding fstab entry"
     mountCmd="/dev/disk/by-uuid/$uuid $mount xfs  defaults,nofail  0  2"
     echo "$mountCmd" >> /etc/fstab
     $(mount $partPath $mount)
-  
   else
-    log "ERR: no UUID found"
+    log "    ERR: no UUID found"
     exit -1;
   fi
   
-  log "addtofstab done"
+  log "    ->addtofstab done"
 }
 
 function getdevicepath()
@@ -52,7 +55,7 @@ function getdevicepath()
   # /dev/disk/by-path
   # /dev/disk/by-uuid
 
-  log "getdevicepath"
+  log "   ->getdevicepath"
 
   getdevicepathresult=""
   local lun=$1
@@ -60,17 +63,17 @@ function getdevicepath()
   local scsiOutput=$(lsscsi)
   if [[ $readlinkOutput =~ (sd[a-zA-Z]{1,2}) ]];
   then
-    log " found device path using readlink"
+    log "     found device path using readlink"
     getdevicepathresult="/dev/${BASH_REMATCH[1]}";
   elif [[ $scsiOutput =~ \[5:0:0:$lun\][^\[]*(/dev/sd[a-zA-Z]{1,2}) ]];
   then
-    log " found device path using lsscsi"
+    log "     found device path using lsscsi"
     getdevicepathresult=${BASH_REMATCH[1]};
   else
-    log " ERR: :lsscsi output not as expected for $lun"
+    log "    ERR: :lsscsi output not as expected for $lun"
     exit -1;
   fi
-  log "getdevicepath done"
+  log "   ->getdevicepath done"
 }
 
 function createlvm()
@@ -93,65 +96,88 @@ function createlvm()
 
   if [[ $lunsCount -gt 1 ]]
   then
-    log " creating lvm devices"
+    log "->creating lvm devices"
 
     local numRaidDevices=0
     local raidDevices=""
-    log " num luns $lunsCount"
+    log "   num luns $lunsCount"
     
     for ((i=0; i<lunsCount; i++))
     do
-      log " trying to find device path"
+      log "   trying to find device path"
       local lun=${lunsA[$i]}
       getdevicepath $lun
       local devicePath=$getdevicepathresult;
       
       if [ -n "$devicePath" ];
       then
-        log " Device Path is $devicePath"
+        log "   Device Path is $devicePath"
         numRaidDevices=$((numRaidDevices + 1))
         raidDevices="$raidDevices $devicePath "
       else
-        log " no device path for LUN $lun"
+        log "   no device path for LUN $lun"
         exit -1;
       fi
     done
 
-    log " num: $numRaidDevices paths: '$raidDevices'"
-    $(pvcreate $raidDevices)
-    $(vgcreate $vgName $raidDevices)
+    log "   num: $numRaidDevices paths: '$raidDevices'"
+    pvcreate $raidDevices
+    log "   pvcreate done"
+    vgcreate $vgName $raidDevices
+    log "   vgcreate done"
 
     for ((j=0; j<mountPathCount; j++))
     do
       local mountPathLoc=${mountPathA[$j]}
       local sizeLoc=${sizeA[$j]}
       local lvNameLoc="$lvName-$j"
-      $(lvcreate --extents $sizeLoc%FREE --stripes $numRaidDevices --name $lvNameLoc $vgName)
-      $(mkfs -t xfs /dev/$vgName/$lvNameLoc)
-      $(mkdir -p $mountPathLoc)
+      lvcreate --extents $sizeLoc%FREE --stripes $numRaidDevices --name $lvNameLoc $vgName
+      log "   lvcreate done"
+
+      mkfs -t xfs /dev/$vgName/$lvNameLoc
+      log "   mkxfs done"
+      
+      mkdir -p $mountPathLoc
+      log "   mountpoint create done"
     
       addtofstab /dev/$vgName/$lvNameLoc $mountPathLoc
     done
 
   else
-    log " creating single disk"
+    log "->creating single disk"
 
     local lun=${lunsA[0]}
     local mountPathLoc=${mountPathA[0]}
+
     getdevicepath $lun;
     local devicePath=$getdevicepathresult;
+    
     if [ -n "$devicePath" ];
     then
-      log " Device Path is $devicePath"
+      log "   Device Path is $devicePath"
       # http://superuser.com/questions/332252/creating-and-formating-a-partition-using-a-bash-script
-      $(echo -e "n\np\n1\n\n\nw" | fdisk $devicePath) > /dev/null
+      # n - add a new partiton
+      # p - primary partition
+      # 1 - partition number 1
+      # RETURN - accept first sector
+      # RETURN - accept lst sector
+      # write table to disk
+      $(echo -e "n\np\n1\n\n\nw" | fdisk $devicePath)
+      sync
+      log "   partitioning create done"
+
       local partPath="$devicePath""1"
-      $(mkfs -t xfs $partPath) > /dev/null
-      $(mkdir -p $mountPathLoc)
+      log "   partion: $partPath"
+
+      mkfs -t xfs $partPath
+      log "   mkxfs done"
+
+      mkdir -p $mountPathLoc
+      log "   mountpoint create done"
 
       addtofstab $partPath $mountPathLoc
     else
-      log " ERR: no device path for LUN $lun"
+      log "   ERR: no device path for LUN $lun"
       exit -1;
     fi
   fi
@@ -164,9 +190,9 @@ function installPackages()
    log "installPackages start"
 
    # update everything
-   zypper update -y
+   zypper patch -y
    # install pattern
-   zypper install pattern -y sap-hana
+   zypper install -y -t pattern sap-hana
    #install packages
    zypper install -y saptune
    
@@ -256,9 +282,10 @@ then
     name=${namesSplit[$ipart]}
     path=${pathsSplit[$ipart]}
     size=${sizesSplit[$ipart]}
-
-    log " creating disk with LUN: $lun VG: $name PATH: $path SIZE: $size"
+    log "=start LUN $lun =============="
+    log "creating disk with LUN: $lun VG: $name PATH: $path SIZE: $size"
     createlvm $lun "vg-$name" "lv-$name" "$path" "$size";
+    log "=end LUN $lun ================"
   done
 else
   log "ERR: Input parameter count not equal"

@@ -1,5 +1,5 @@
 These are the "source" of the scripts passed inline as
-binary blobs (base64 encoded) to the custom script extention 
+binary blobs (base64 encoded) to the custom script extension 
 within the different templates.
 
 The benefit to inline them is that they do not have

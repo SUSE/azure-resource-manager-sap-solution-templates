@@ -2,3 +2,4 @@ for_marketplace/
 build/
 xml/
 tests/
+.vscode/

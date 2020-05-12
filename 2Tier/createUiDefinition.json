@@ -23,6 +23,11 @@
                   "confirmPassword": "Confirm password",
                   "sshPublicKey": "SSH public key"
                 },
+                "toolTip": {
+                    "authenticationType": "Authentication Type for the Virtual Machine",
+                    "password": "Password for the Virtual Machine",
+                    "sshPublicKey": "SSH Public Key for the Virtual Machine"
+                },
                 "constraints": {
                   "required": true
                 },
@@ -95,32 +100,29 @@
                         "defaultValue": "SLES for SAP 12 SP4",
                         "toolTip": "Please a select SUSE OS version",
                         "constraints": {
-                            "required": true,
+                          "required": true,
                           "allowedValues": [
-                            
                             {
                                 "label": "SLES for SAP 15 SP1",
-                                "value": "{\"imageName\":\"SLES for SAP 15 SP1\"}"
+                                "value": "SLES for SAP 15 SP1"
                             },
-							{
+			    {
                                 "label": "SLES for SAP 15",
-                                "value": "{\"imageName\":\"SLES for SAP 15\"}"
+                                "value": "SLES for SAP 15"
                             },
-							{
+			    {
                                 "label": "SLES for SAP 12 SP4",
-                                "value": "{\"imageName\":\"SLES for SAP 12 SP4\"}"
+                                "value": "SLES for SAP 12 SP4"
                             },
-							{
+			    {
                                 "label": "SLES for SAP 12 SP3",
-                                "value": "{\"imageName\":\"SLES for SAP 12 SP3\"}"
-                            }
-                            
+                                "value": "SLES for SAP 12 SP3"
+                            }  
                           ]                
                          
                         },
-                         "visible": true
-                       				   
-						},
+                         "visible": true   				   
+		    },
                     {
                         "name": "hanaVMSize",
                         "type": "Microsoft.Compute.SizeSelector",
@@ -138,8 +140,7 @@
                         "imageReference": {
                             "publisher": "SUSE",
                             "offer": "SLES-SAP",
-                            "sku": "[if(equals(parse(steps('VMSizes').suseOsImage).imageName, 'SLES for SAP 15 SP1'), 'gen1', if(equals(parse(steps('VMSizes').suseOsImage).imageName, 'SLES for SAP 15'), '15', if(equals(parse(steps('VMSizes').suseOsImage).imageName, 'SLES for SAP 12 SP4'), '12-SP4', if(parse(steps('VMSizes').suseOsImage).imageName, 'SLES for SAP 12 SP3'), '12-SP3', '12-SP4'))))]"
-                            
+                            "sku": "[if(equals(steps('VMSizes').suseOsImage, 'SLES for SAP 15 SP1'), 'gen1', if(equals(steps('VMSizes').suseOsImage, 'SLES for SAP 15'    ), '15', if(equals(steps('VMSizes').suseOsImage, 'SLES for SAP 12 SP4'), '12-SP4a', if(equals(steps('VMSizes').suseOsImage, 'SLES for SAP 12 SP3'), '12-SP3',) '12-SP4'))) ]"
                         },
                         "count": 1,
                         "visible": true
@@ -201,7 +202,7 @@
             "location": "[location()]",
 
             "sapSystemId": "[steps('SAPConfig').sapSystemId]",
-            "osType": "[parse(steps('VMSizes').suseOsImage).imageName]",
+            "osType": "[steps('VMSizes').suseOsImage]",
             "size": "[parse(steps('SAPConfig').deploymentSize).size]",
             
             "adminUsername": "[basics('adminUsername')]",

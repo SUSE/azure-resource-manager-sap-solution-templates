@@ -462,7 +462,7 @@
         {
             "type": "Microsoft.Network/networkInterfaces",
             "name": "[parameters('hNICName')]",
-            "apiVersion": "2018-04-01",
+            "apiVersion": "2018-06-01",
             "dependsOn": [
                 "[concat('Microsoft.Network/virtualNetworks/', parameters('vnetName'))]",
                 "[concat('Microsoft.Network/publicIPAddresses/', parameters('hPIPName'))]"

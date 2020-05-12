@@ -23,6 +23,11 @@
                   "confirmPassword": "Confirm password",
                   "sshPublicKey": "SSH public key"
                 },
+                "toolTip": {
+                    "authenticationType": "Authentication Type for the Virtual Machine",
+                    "password": "Password for the Virtual Machine",
+                    "sshPublicKey": "SSH Public Key for the Virtual Machine"
+                },               
                 "constraints": {
                   "required": true
                 },

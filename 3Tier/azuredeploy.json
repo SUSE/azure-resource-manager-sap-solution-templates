@@ -478,7 +478,7 @@
     },
     "resources": [
         {
-            "apiVersion": "2017-05-10",
+            "apiVersion": "2018-05-01",
             "name": "pid-e3dcfce3-0f1a-4804-917d-ecbad3271a42",
             "type": "Microsoft.Resources/deployments",
             "properties": {
@@ -566,7 +566,7 @@
         {
             "type": "Microsoft.Network/networkInterfaces",
             "name": "[parameters('xscsNICName')]",
-            "apiVersion": "2017-06-01",
+            "apiVersion": "2018-06-01",
             "dependsOn": [
                 "[concat('Microsoft.Network/virtualNetworks/', parameters('vnetName'))]",
                 "[concat('Microsoft.Network/publicIPAddresses/', parameters('xscsPIPName'))]"
@@ -597,7 +597,7 @@
             "dependsOn": [
                 "[concat('Microsoft.Network/networkInterfaces/', parameters('xscsNICName'))]"
             ],
-            "apiVersion": "2017-03-30",
+            "apiVersion": "2018-06-01",
             "location": "[parameters('location')]",
             "tags": {
                 "provider": "[toUpper(parameters('_SUSETags').provider)]"
@@ -648,7 +648,7 @@
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "name": "[concat(parameters('xscsVMName'), '/', 'CustomScript')]",
-            "apiVersion": "2017-12-01",
+            "apiVersion": "2018-06-01",
             "location": "[parameters('location')]",
             "dependsOn": [
                 "[concat('Microsoft.Compute/virtualMachines/', parameters('xscsVMName'))]"
@@ -670,7 +670,7 @@
         {
             "type": "Microsoft.Network/networkInterfaces",
             "name": "[parameters('hNICName')]",
-            "apiVersion": "2017-06-01",
+            "apiVersion": "2018-06-01",
             "dependsOn": [
                 "[concat('Microsoft.Network/virtualNetworks/', parameters('vnetName'))]"
             ],
@@ -699,7 +699,7 @@
             "dependsOn": [
                 "[concat('Microsoft.Network/networkInterfaces/', parameters('hNICName'))]"
             ],
-            "apiVersion": "2017-12-01",
+            "apiVersion": "2018-06-01",
             "location": "[parameters('location')]",
             "tags": {
                 "provider": "[toUpper(parameters('_SUSETags').provider)]"
@@ -749,7 +749,7 @@
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "name": "[concat(parameters('hVMName'), '/', 'CustomScript')]",
-            "apiVersion": "2017-12-01",
+            "apiVersion": "2018-06-01",
             "location": "[parameters('location')]",
             "dependsOn": [
                 "[concat('Microsoft.Compute/virtualMachines/', parameters('hVMName'))]"
@@ -787,7 +787,7 @@
         {
             "type": "Microsoft.Network/networkInterfaces",
             "name": "[concat(parameters('appNICName'), '-', copyIndex())]",
-            "apiVersion": "2017-06-01",
+            "apiVersion": "2018-06-01",
             "copy": {
                 "name": "appNICLoop",
                 "count": "[variables('appvmCount')]"
@@ -825,7 +825,7 @@
                 "appNICLoop",
                 "[concat('Microsoft.Compute/availabilitySets/', parameters('appAVSetName'))]"
             ],
-            "apiVersion": "2017-03-30",
+            "apiVersion": "2018-06-01",
             "location": "[parameters('location')]",
             "tags": {
                 "provider": "[toUpper(parameters('_SUSETags').provider)]"
@@ -879,7 +879,7 @@
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "name": "[concat(parameters('appVMName'), '-', copyIndex(), '/', 'CustomScript')]",
-            "apiVersion": "2017-12-01",
+            "apiVersion": "2018-06-01",
             "copy": {
                 "name": "appCSELoop",
                 "count": "[variables('appvmCount')]"

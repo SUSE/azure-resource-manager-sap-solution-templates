@@ -65,19 +65,19 @@
                             "allowedValues": [
                                 {
                                     "label": "Demo",
-                                    "value": "{\"size\":\"Demo\",\"hanaVMSize\":\"Standard_E4s_v3\",\"xscsVMSize\":\"Standard_D2s_v3\",\"appsVMSize\":\"Standard_D2s_v3\",\"appsVMCount\":2,\"nfsVMSize\":\"Standard_D2s_v3\"}"
+                                    "value": "{\"size\":\"Demo\",\"hanaVMSize\":\"Standard_E4s_v3\",\"xscsVMSize\":\"Standard_D2s_v3\",\"appsVMSize\":\"Standard_D2s_v3\",\"appsVMCount\":2,\"nfsVMSize\":\"Standard_D2s_v3"
                                 },
                                 {
                                     "label": "Small",
-                                    "value": "{\"size\":\"Small\",\"hanaVMSize\":\"Standard_E64s_v3\",\"xscsVMSize\":\"Standard_D2s_v3\",\"appsVMSize\":\"Standard_E64s_v3\",\"appsVMCount\":5,\"nfsVMSize\":\"Standard_D2s_v3\"}"
+                                    "value": "{\"size\":\"Small\",\"hanaVMSize\":\"Standard_E64s_v3\",\"xscsVMSize\":\"Standard_D2s_v3\",\"appsVMSize\":\"Standard_E64s_v3\",\"appsVMCount\":5,\"nfsVMSize\":\"Standard_D2s_v3"
                                 },
                                 {
                                     "label": "Medium",
-                                    "value": "{\"size\":\"Medium\",\"hanaVMSize\":\"Standard_M64s\",\"xscsVMSize\":\"Standard_D2s_v3\",\"appsVMSize\":\"Standard_E64s_v3\",\"appsVMCount\":5,\"nfsVMSize\":\"Standard_D2s_v3\"}"
+                                    "value": "{\"size\":\"Medium\",\"hanaVMSize\":\"Standard_M64s\",\"xscsVMSize\":\"Standard_D2s_v3\",\"appsVMSize\":\"Standard_E64s_v3\",\"appsVMCount\":5,\"nfsVMSize\":\"Standard_D2s_v3"
                                 },
                                 {
                                     "label": "Large",
-                                    "value": "{\"size\":\"Large\",\"hanaVMSize\":\"Standard_M128s\",\"xscsVMSize\":\"Standard_D2s_v3\",\"appsVMSize\":\"Standard_E64s_v3\",\"appsVMCount\":10,\"nfsVMSize\":\"Standard_D2s_v3\"}"
+                                    "value": "{\"size\":\"Large\",\"hanaVMSize\":\"Standard_M128s\",\"xscsVMSize\":\"Standard_D2s_v3\",\"appsVMSize\":\"Standard_E64s_v3\",\"appsVMCount\":10,\"nfsVMSize\":\"Standard_D2s_v3"
                                 }
                             ]
                         }
@@ -128,19 +128,19 @@
                             
                             {
                                 "label": "SLES for SAP 15 SP1",
-                                "value": "{\"imageName\":\"SLES for SAP 15 SP1\"}"
+                                "value": "SLES for SAP 15 SP1"
                             },
 							{
                                 "label": "SLES for SAP 15",
-                                "value": "{\"imageName\":\"SLES for SAP 15\"}"
+                                "value": "SLES for SAP 15"
                             },
 							{
                                 "label": "SLES for SAP 12 SP4",
-                                "value": "{\"imageName\":\"SLES for SAP 12 SP4\"}"
+                                "value": "SLES for SAP 12 SP4"
                             },
 							{
                                 "label": "SLES for SAP 12 SP3",
-                                "value": "{\"imageName\":\"SLES for SAP 12 SP3\"}"
+                                "value": "SLES for SAP 12 SP3"
                             }
                             
                           ]                

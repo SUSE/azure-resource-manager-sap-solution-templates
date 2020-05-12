@@ -4,3 +4,4 @@ xml/
 tests/
 .vscode/
 */git_guid.txt
+tools/sideload-createuidef.sh

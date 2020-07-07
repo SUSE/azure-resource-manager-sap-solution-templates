@@ -1291,7 +1291,7 @@
                 "typeHandlerVersion": "2.0",
                 "autoUpgradeMinorVersion": true,
                 "protectedSettings": {
-                    "commandToExecute": "[concat('while [ ! -f /var/lib/waagent/CustomData ]; do sleep 1; done;sleep 10;cat /var/lib/waagent/CustomData | base64 --decode | sh -s -- -luns 0 -names sap -paths /srv/nfs/', parameters('sapSystemId'))]"
+                    "commandToExecute": "[concat('while [ ! -f /var/lib/cloud/instance/user-data.txt ]; do sleep 1; done;sleep 10;cat /var/lib/cloud/instance/user-data.txt  | sh -s -- -luns 0 -names sap -paths /srv/nfs/', parameters('sapSystemId'))]"
                 }
             }
         },
@@ -1313,7 +1313,7 @@
                 "typeHandlerVersion": "2.0",
                 "autoUpgradeMinorVersion": true,
                 "protectedSettings": {
-                    "commandToExecute": "[concat('while [ ! -f /var/lib/waagent/CustomData ]; do sleep 1; done;sleep 10;cat /var/lib/waagent/CustomData | base64 --decode | sh -s -- -luns 0 -names sap -paths /srv/nfs/', parameters('sapSystemId'))]"
+                    "commandToExecute": "[concat('while [ ! -f /var/lib/cloud/instance/user-data.txt ]; do sleep 1; done;sleep 10;cat /var/lib/cloud/instance/user-data.txt  | sh -s -- -luns 0 -names sap -paths /srv/nfs/', parameters('sapSystemId'))]"
                 }
             }
         },
@@ -1540,7 +1540,7 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [],
-                    "commandToExecute": "[concat('while [ ! -f /var/lib/waagent/CustomData ]; do sleep 1; done;sleep 10;cat /var/lib/waagent/CustomData | base64 --decode | sh -s -- ', variables('sizes')[parameters('size')].xscs.scriptArguments)]"
+                    "commandToExecute": "[concat('while [ ! -f /var/lib/cloud/instance/user-data.txt ]; do sleep 1; done;sleep 10;cat /var/lib/cloud/instance/user-data.txt  | sh -s -- ', variables('sizes')[parameters('size')].xscs.scriptArguments)]"
                 }
             }
         },
@@ -1761,7 +1761,7 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [],
-                    "commandToExecute": "[concat('while [ ! -f /var/lib/waagent/CustomData ]; do sleep 1; done;sleep 10;cat /var/lib/waagent/CustomData | base64 --decode | sh -s -- ', variables('sizes')[parameters('size')].hana.scriptArguments)]"
+                    "commandToExecute": "[concat('while [ ! -f /var/lib/cloud/instance/user-data.txt ]; do sleep 1; done;sleep 10;cat /var/lib/cloud/instance/user-data.txt  | sh -s -- ', variables('sizes')[parameters('size')].hana.scriptArguments)]"
                 }
             }
         },
@@ -1894,7 +1894,7 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [],
-                    "commandToExecute": "[concat('while [ ! -f /var/lib/waagent/CustomData ]; do sleep 1; done;sleep 10;cat /var/lib/waagent/CustomData | base64 --decode | sh -s -- ', variables('sizes')[parameters('size')].apps.scriptArguments)]"
+                    "commandToExecute": "[concat('while [ ! -f /var/lib/cloud/instance/user-data.txt ]; do sleep 1; done;sleep 10;cat /var/lib/cloud/instance/user-data.txt  | sh -s -- ', variables('sizes')[parameters('size')].apps.scriptArguments)]"
                 }
             }
         }

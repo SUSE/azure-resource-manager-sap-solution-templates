@@ -558,7 +558,7 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [],
-                    "commandToExecute": "[concat('while [ ! -f /var/lib/waagent/CustomData ]; do sleep 1; done;sleep 10;cat /var/lib/waagent/CustomData | base64 --decode | sh -s -- ', variables('sizes')[parameters('size')].hana.scriptArguments)]"
+                    "commandToExecute": "[concat('while [ ! -f /var/lib/cloud/instance/user-data.txt ]; do sleep 1; done;sleep 10;cat /var/lib/cloud/instance/user-data.txt | sh -s -- ', variables('sizes')[parameters('size')].hana.scriptArguments)]"
                 }
             }
         }

@@ -13,7 +13,7 @@
         "osType": {
             "type": "string",
             "allowedValues": [
-                    "SLES for SAP 12 SP3",
+                    "SLES for SAP 12 SP5",
                     "SLES for SAP 12 SP4",
                     "SLES for SAP 15",
                     "SLES for SAP 15 SP1"
@@ -214,7 +214,7 @@
         ],
         "sshKeysArrayEmpty": [
         ],
-        "imageSku" :  "[if(equals(parameters('osType'), 'SLES for SAP 15 SP1'), 'gen1', if(equals(parameters('osType'), 'SLES for SAP 15'), '15', if(equals(parameters('osType'), 'SLES for SAP 12 SP4'), '12-SP4', if(equals(parameters('osType'), 'SLES for SAP 12 SP3'), '12-SP3', '12-SP4'))))]",
+        "imageSku" :  "[if(equals(parameters('osType'), 'SLES for SAP 15 SP1'), 'gen1', if(equals(parameters('osType'), 'SLES for SAP 15'), '15', if(equals(parameters('osType'), 'SLES for SAP 12 SP4'), '12-SP4', if(equals(parameters('osType'), 'SLES for SAP 12 SP5'), '12-SP5', '12-SP4'))))]",
         "imageOffer" : "[if(equals(parameters('osType'), 'SLES for SAP 15 SP1'), 'sles-sap-15-sp1', 'SLES-SAP')]",
         "sshKeysArray": "[if(equals(length(parameters('sshKeyData')), 0), variables('sshKeysArrayEmpty'), variables('sshKeysArrayKey'))]",
         "internalSubnetId": "[resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('subnetName'))]",
@@ -1290,7 +1290,8 @@
                 "type": "CustomScript",
                 "typeHandlerVersion": "2.0",
                 "autoUpgradeMinorVersion": true,
-                "protectedSettings": {
+                "settings": {
+                    "fileUris": [],
                     "commandToExecute": "[concat('while [ ! -f /var/lib/cloud/instance/user-data.txt ]; do sleep 1; done;sleep 10;cat /var/lib/cloud/instance/user-data.txt  | sh -s -- -luns 0 -names sap -paths /srv/nfs/', parameters('sapSystemId'))]"
                 }
             }
@@ -1312,7 +1313,8 @@
                 "type": "CustomScript",
                 "typeHandlerVersion": "2.0",
                 "autoUpgradeMinorVersion": true,
-                "protectedSettings": {
+                "settings": {
+                    "fileUris": [],
                     "commandToExecute": "[concat('while [ ! -f /var/lib/cloud/instance/user-data.txt ]; do sleep 1; done;sleep 10;cat /var/lib/cloud/instance/user-data.txt  | sh -s -- -luns 0 -names sap -paths /srv/nfs/', parameters('sapSystemId'))]"
                 }
             }

@@ -13,7 +13,7 @@
         "osType": {
             "type": "string",
             "allowedValues": [
-                    "SLES for SAP 12 SP3",
+                    "SLES for SAP 12 SP5",
                     "SLES for SAP 12 SP4",
                     "SLES for SAP 15",
                     "SLES for SAP 15 SP1"
@@ -114,7 +114,7 @@
                 "keyData": "[parameters('sshKeyData')]"
             }
         ],
-        "imageSku" :  "[if(equals(parameters('osType'), 'SLES for SAP 15 SP1'), 'gen1', if(equals(parameters('osType'), 'SLES for SAP 15'), '15', if(equals(parameters('osType'), 'SLES for SAP 12 SP4'), '12-SP4', if(equals(parameters('osType'), 'SLES for SAP 12 SP3'), '12-SP3', '12-SP4'))))]",
+        "imageSku" :  "[if(equals(parameters('osType'), 'SLES for SAP 15 SP1'), 'gen1', if(equals(parameters('osType'), 'SLES for SAP 15'), '15', if(equals(parameters('osType'), 'SLES for SAP 12 SP4'), '12-SP4', if(equals(parameters('osType'), 'SLES for SAP 12 SP5'), '12-SP5', '12-SP4'))))]",
         "imageOffer" : "[if(equals(parameters('osType'), 'SLES for SAP 15 SP1'), 'sles-sap-15-sp1', 'SLES-SAP')]",
         "sshKeysArrayEmpty": [],
         "sshKeysArray": "[if(equals(length(parameters('sshKeyData')), 0), variables('sshKeysArrayEmpty'), variables('sshKeysArrayKey'))]",

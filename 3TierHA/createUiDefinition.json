@@ -121,7 +121,7 @@
                         "type": "Microsoft.Common.DropDown",
                         "label": "SUSE OS Image",
                         "defaultValue": "SLES for SAP 12 SP4",
-                        "toolTip": "Please select SUSE OS version image",
+                        "toolTip": "Please select SUSE OS version",
                         "constraints": {
 						  "required": true,
                           "allowedValues": [
@@ -146,9 +146,17 @@
                           ]                
                          
                         },
-                         "visible": true
-                       				   
-						},
+                         "visible": true                       				   
+					},
+					{
+                		"name": "infoBox1",
+                		"type": "Microsoft.Common.InfoBox",
+                		"visible": true,
+                		"options": {
+                    		"icon": "Info",
+                    		"text": "The check, if the needed instance sizes are available, could take a few seconds ..."                    
+                		}
+            		},
                     {
                         "name": "hanaVMSize",
                         "type": "Microsoft.Compute.SizeSelector",

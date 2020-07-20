@@ -65,19 +65,19 @@
                             "allowedValues": [
                                 {
                                     "label": "Demo",
-                                    "value": "{\"size\":\"Demo\",\"hanaVMSize\":\"Standard_E4s_v3\",\"xscsVMSize\":\"Standard_D2s_v3\",\"appsVMSize\":\"Standard_D2s_v3\",\"appsVMCount\":2,\"nfsVMSize\":\"Standard_D2s_v3}"
+                                    "value": "{\"size\":\"Demo\",\"hanaVMSize\":\"Standard_E4s_v3\",\"xscsVMSize\":\"Standard_D2s_v3\",\"appsVMSize\":\"Standard_D2s_v3\",\"appsVMCount\":2,\"nfsVMSize\":\"Standard_D2s_v3\"}"
                                 },
                                 {
                                     "label": "Small",
-                                    "value": "{\"size\":\"Small\",\"hanaVMSize\":\"Standard_E64s_v3\",\"xscsVMSize\":\"Standard_D2s_v3\",\"appsVMSize\":\"Standard_E64s_v3\",\"appsVMCount\":5,\"nfsVMSize\":\"Standard_D2s_v3}"
+                                    "value": "{\"size\":\"Small\",\"hanaVMSize\":\"Standard_E64s_v3\",\"xscsVMSize\":\"Standard_D2s_v3\",\"appsVMSize\":\"Standard_E64s_v3\",\"appsVMCount\":5,\"nfsVMSize\":\"Standard_D2s_v3\"}"
                                 },
                                 {
                                     "label": "Medium",
-                                    "value": "{\"size\":\"Medium\",\"hanaVMSize\":\"Standard_M64s\",\"xscsVMSize\":\"Standard_D2s_v3\",\"appsVMSize\":\"Standard_E64s_v3\",\"appsVMCount\":5,\"nfsVMSize\":\"Standard_D2s_v3}"
+                                    "value": "{\"size\":\"Medium\",\"hanaVMSize\":\"Standard_M64s\",\"xscsVMSize\":\"Standard_D2s_v3\",\"appsVMSize\":\"Standard_E64s_v3\",\"appsVMCount\":5,\"nfsVMSize\":\"Standard_D2s_v3\"}"
                                 },
                                 {
                                     "label": "Large",
-                                    "value": "{\"size\":\"Large\",\"hanaVMSize\":\"Standard_M128s\",\"xscsVMSize\":\"Standard_D2s_v3\",\"appsVMSize\":\"Standard_E64s_v3\",\"appsVMCount\":10,\"nfsVMSize\":\"Standard_D2s_v3}"
+                                    "value": "{\"size\":\"Large\",\"hanaVMSize\":\"Standard_M128s\",\"xscsVMSize\":\"Standard_D2s_v3\",\"appsVMSize\":\"Standard_E64s_v3\",\"appsVMCount\":10,\"nfsVMSize\":\"Standard_D2s_v3\"}"
                                 }
                             ]
                         }
@@ -123,9 +123,8 @@
                         "defaultValue": "SLES for SAP 12 SP4",
                         "toolTip": "Please select SUSE OS version",
                         "constraints": {
-						  "required": true,
-                          "allowedValues": [
-                            
+						    "required": true,
+                            "allowedValues": [                            
                             {
                                 "label": "SLES for SAP 15 SP1",
                                 "value": "SLES for SAP 15 SP1"
@@ -141,12 +140,10 @@
 							{
                                 "label": "SLES for SAP 12 SP5",
                                 "value": "SLES for SAP 12 SP5"
-                            }
-                            
-                          ]                
-                         
+                            }                            
+                            ]                                         
                         },
-                         "visible": true                       				   
+                        "visible": true                       				   
 					},
 					{
                 		"name": "infoBox1",
@@ -174,7 +171,7 @@
                         "imageReference": {
                             "publisher": "SUSE",
                             "offer": "SLES-SAP",
-                            "sku": "[if(equals(steps('VMSizes').suseOsImage, 'SLES for SAP 15 SP1'), 'gen1', if(equals(steps('VMSizes').suseOsImage, 'SLES for SAP 15'    ), '15', if(equals(steps('VMSizes').suseOsImage, 'SLES for SAP 12 SP4'), '12-SP4', if(equals(steps('VMSizes').suseOsImage, 'SLES for SAP 12 SP5'), '12-SP5',) '12-SP4'))) ]"
+                            "sku": "[if(equals(steps('VMSizes').suseOsImage, 'SLES for SAP 15 SP1'), 'gen1', if(equals(steps('VMSizes').suseOsImage, 'SLES for SAP 15'), '15', if(equals(steps('VMSizes').suseOsImage, 'SLES for SAP 12 SP4'), '12-SP4', if(equals(steps('VMSizes').suseOsImage, 'SLES for SAP 12 SP5'), '12-SP5',) '12-SP4'))) ]"
                         },
                         "count": 2,
                         "visible": true
@@ -220,7 +217,8 @@
                             "offer": "SLES-SAP",
                             "sku": "[if(equals(steps('VMSizes').suseOsImage, 'SLES for SAP 15 SP1'), 'gen1', if(equals(steps('VMSizes').suseOsImage, 'SLES for SAP 15'    ), '15', if(equals(steps('VMSizes').suseOsImage, 'SLES for SAP 12 SP4'), '12-SP4', if(equals(steps('VMSizes').suseOsImage, 'SLES for SAP 12 SP5'), '12-SP5',) '12-SP4'))) ]"
                         },
-                        "count": "[parse(steps('SAPConfig').deploymentSize).appsVMCount]",                         "visible": true
+                        "count": "[parse(steps('SAPConfig').deploymentSize).appsVMCount]",
+                        "visible": true
                     },
                     {
                         "name": "nfsVMSize",
@@ -244,7 +242,6 @@
                         "count": 2,
                         "visible": true
                     }
-           
                 ]
             },
             {

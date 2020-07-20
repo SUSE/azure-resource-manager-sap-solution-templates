@@ -98,34 +98,31 @@
                         "type": "Microsoft.Common.DropDown",
                         "label": "SUSE OS Image",
                         "defaultValue": "SLES for SAP 12 SP4",
-                        "toolTip": "Please select SUSE OS version image",
+                        "toolTip": "Please select SUSE OS version",
                         "constraints": {
 						  "required": true,
-                          "allowedValues": [
-                            
-                            {
+                          "allowedValues": [                            
+                           {
                                 "label": "SLES for SAP 15 SP1",
                                 "value": "SLES for SAP 15 SP1"
-                            },
-							{
+                           },
+						   {
                                 "label": "SLES for SAP 15",
                                 "value": "SLES for SAP 15"
-                            },
-							{
+                           },
+						   {
                                 "label": "SLES for SAP 12 SP4",
                                 "value": "SLES for SAP 12 SP4"
-                            },
-							{
+                           },
+						   {
                                 "label": "SLES for SAP 12 SP5",
                                 "value": "SLES for SAP 12 SP5"
-                            }
-                            
-                          ]                
-                         
+                           }                            
+                           ]                                         
                         },
-                         "visible": true
-                       },
-                       {
+                        "visible": true
+                    },
+                    {
                 		"name": "infoBox1",
                 		"type": "Microsoft.Common.TextBlock",
                 		"visible": true,
@@ -197,11 +194,10 @@
                             "offer": "SLES-SAP",
                             "sku": "[if(equals(steps('VMSizes').suseOsImage, 'SLES for SAP 15 SP1'), 'gen1', if(equals(steps('VMSizes').suseOsImage, 'SLES for SAP 15'    ), '15', if(equals(steps('VMSizes').suseOsImage, 'SLES for SAP 12 SP4'), '12-SP4', if(equals(steps('VMSizes').suseOsImage, 'SLES for SAP 12 SP5'), '12-SP5',) '12-SP4'))) ]"
                         },
-                        "count": "[parse(steps('SAPConfig').deploymentSize).appsVMCount]"
-                            ,
+                        "count": "[parse(steps('SAPConfig').deploymentSize).appsVMCount]",
                         "visible": true
                     }
-                                   ]
+                ]
             },            
             {
                 "name": "networkConfig",
@@ -259,6 +255,7 @@
             "osType": "[steps('VMSizes').suseOsImage]",
             "size": "[parse(steps('SAPConfig').deploymentSize).size]",
 
+            
             "adminUsername": "[basics('adminUsername')]",
             "adminPassword": "[basics('adminPassword').password]",
             "sshKeyData": "[basics('adminPassword').sshPublicKey]",

@@ -65,15 +65,15 @@
                             "allowedValues": [
                                 {
                                     "label": "Demo",
-                                    "value": "{\"size\":\"Demo\",\"hanaVMSize\":\"Standard_E4s_v3\"}"
+                                    "value": "{\"size\":\"Demo\",\"hanaVMSize\":\"Standard_E8s_v3\"}"
                                 },
                                 {
                                     "label": "Small",
-                                    "value": "{\"size\":\"Small\",\"hanaVMSize\":\"Standard_E64s_v3\"}"
+                                    "value": "{\"size\":\"Small\",\"hanaVMSize\":\"Standard_E32s_v3\"}"
                                 },
                                 {
                                     "label": "Medium",
-                                    "value": "{\"size\":\"Medium\",\"hanaVMSize\":\"Standard_M64s\"}"
+                                    "value": "{\"size\":\"Medium\",\"hanaVMSize\":\"Standard_E64s_v3\"}"
                                 },
                                 {
                                     "label": "Large",

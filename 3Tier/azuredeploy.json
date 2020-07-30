@@ -1,5 +1,5 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
         "location": {
@@ -139,8 +139,18 @@
     },
     "variables": {
         "sshKeyPath": "[concat('/home/',parameters('adminUsername'),'/.ssh/authorized_keys')]",
-        "imageSku" :  "[if(equals(parameters('osType'), 'SLES for SAP 15 SP1'), 'gen1', if(equals(parameters('osType'), 'SLES for SAP 15'), '15', if(equals(parameters('osType'), 'SLES for SAP 12 SP4'), '12-SP4', if(equals(parameters('osType'), 'SLES for SAP 12 SP5'), '12-SP5', '12-SP4'))))]",
-        "imageOffer" : "[if(equals(parameters('osType'), 'SLES for SAP 15 SP1'), 'sles-sap-15-sp1', 'SLES-SAP')]",
+        "imageSku" :   "[
+                         if(equals(parameters('osType'), 'SLES for SAP 15 SP1'), 'gen1'
+                        ,if(equals(parameters('osType'), 'SLES for SAP 15'), '15'
+                        ,if(equals(parameters('osType'), 'SLES for SAP 12 SP4'), '12-SP4'
+                        ,if(equals(parameters('osType'), 'SLES for SAP 12 SP5'), 'gen1'
+                        ,'12-SP4'))))
+                        ]",
+        "imageOffer" : "[
+                         if(equals(parameters('osType'), 'SLES for SAP 12 SP5'), 'sles-sap-12-sp5'
+                        ,if(equals(parameters('osType'), 'SLES for SAP 15 SP1'), 'sles-sap-15-sp1'
+                        ,'SLES-SAP')
+                        ]",
         "sshKeysArrayKey": [
             {
                 "path": "[variables('sshKeyPath')]",
@@ -478,7 +488,7 @@
     },
     "resources": [
         {
-            "apiVersion": "2018-05-01",
+            "apiVersion": "2019-10-01",
             "name": "pid-e3dcfce3-0f1a-4804-917d-ecbad3271a42",
             "type": "Microsoft.Resources/deployments",
             "properties": {
@@ -493,7 +503,7 @@
         {
             "type": "Microsoft.Network/networkSecurityGroups",
             "name": "[concat(parameters('nsgName'))]",
-            "apiVersion": "2018-04-01",
+            "apiVersion": "2019-12-01",
             "location": "[parameters('location')]",
             "condition": "[parameters('createVNET')]",
             "tags": {
@@ -521,7 +531,7 @@
         {
             "type": "Microsoft.Network/virtualNetworks",
             "name": "[parameters('vnetName')]",
-            "apiVersion": "2018-04-01",
+            "apiVersion": "2019-12-01",
             "location": "[parameters('location')]",
             "dependsOn": [
                 "[concat('Microsoft.Network/networkSecurityGroups/', parameters('nsgName'))]"
@@ -550,7 +560,7 @@
         {
             "type": "Microsoft.Network/publicIPAddresses",
             "name": "[parameters('xscsPIPName')]",
-            "apiVersion": "2018-04-01",
+            "apiVersion": "2019-12-01",
             "dependsOn": [
                 "[concat('Microsoft.Network/virtualNetworks/', parameters('vnetName'))]"
             ],
@@ -566,7 +576,7 @@
         {
             "type": "Microsoft.Network/networkInterfaces",
             "name": "[parameters('xscsNICName')]",
-            "apiVersion": "2018-06-01",
+            "apiVersion": "2019-12-01",
             "dependsOn": [
                 "[concat('Microsoft.Network/virtualNetworks/', parameters('vnetName'))]",
                 "[concat('Microsoft.Network/publicIPAddresses/', parameters('xscsPIPName'))]"
@@ -597,7 +607,7 @@
             "dependsOn": [
                 "[concat('Microsoft.Network/networkInterfaces/', parameters('xscsNICName'))]"
             ],
-            "apiVersion": "2018-06-01",
+            "apiVersion": "2019-07-01",
             "location": "[parameters('location')]",
             "tags": {
                 "provider": "[toUpper(parameters('_SUSETags').provider)]"
@@ -648,7 +658,7 @@
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "name": "[concat(parameters('xscsVMName'), '/', 'CustomScript')]",
-            "apiVersion": "2018-06-01",
+            "apiVersion": "2019-07-01",
             "location": "[parameters('location')]",
             "dependsOn": [
                 "[concat('Microsoft.Compute/virtualMachines/', parameters('xscsVMName'))]"
@@ -670,7 +680,7 @@
         {
             "type": "Microsoft.Network/networkInterfaces",
             "name": "[parameters('hNICName')]",
-            "apiVersion": "2018-06-01",
+            "apiVersion": "2019-12-01",
             "dependsOn": [
                 "[concat('Microsoft.Network/virtualNetworks/', parameters('vnetName'))]"
             ],
@@ -699,7 +709,7 @@
             "dependsOn": [
                 "[concat('Microsoft.Network/networkInterfaces/', parameters('hNICName'))]"
             ],
-            "apiVersion": "2018-06-01",
+            "apiVersion": "2019-07-01",
             "location": "[parameters('location')]",
             "tags": {
                 "provider": "[toUpper(parameters('_SUSETags').provider)]"
@@ -749,7 +759,7 @@
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "name": "[concat(parameters('hVMName'), '/', 'CustomScript')]",
-            "apiVersion": "2018-06-01",
+            "apiVersion": "2019-07-01",
             "location": "[parameters('location')]",
             "dependsOn": [
                 "[concat('Microsoft.Compute/virtualMachines/', parameters('hVMName'))]"
@@ -771,7 +781,7 @@
         {
             "type": "Microsoft.Compute/availabilitySets",
             "name": "[parameters('appAVSetName')]",
-            "apiVersion": "2017-03-30",
+            "apiVersion": "2019-07-01",
             "location": "[parameters('location')]",
             "sku": {
                 "name": "Aligned"
@@ -787,7 +797,7 @@
         {
             "type": "Microsoft.Network/networkInterfaces",
             "name": "[concat(parameters('appNICName'), '-', copyIndex())]",
-            "apiVersion": "2018-06-01",
+            "apiVersion": "2019-12-01",
             "copy": {
                 "name": "appNICLoop",
                 "count": "[variables('appvmCount')]"
@@ -825,7 +835,7 @@
                 "appNICLoop",
                 "[concat('Microsoft.Compute/availabilitySets/', parameters('appAVSetName'))]"
             ],
-            "apiVersion": "2018-06-01",
+            "apiVersion": "2019-07-01",
             "location": "[parameters('location')]",
             "tags": {
                 "provider": "[toUpper(parameters('_SUSETags').provider)]"
@@ -879,7 +889,7 @@
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "name": "[concat(parameters('appVMName'), '-', copyIndex(), '/', 'CustomScript')]",
-            "apiVersion": "2018-06-01",
+            "apiVersion": "2019-07-01",
             "copy": {
                 "name": "appCSELoop",
                 "count": "[variables('appvmCount')]"

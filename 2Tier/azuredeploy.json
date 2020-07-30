@@ -1,5 +1,5 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
         "location": {
@@ -114,8 +114,18 @@
                 "keyData": "[parameters('sshKeyData')]"
             }
         ],
-        "imageSku" :  "[if(equals(parameters('osType'), 'SLES for SAP 15 SP1'), 'gen1', if(equals(parameters('osType'), 'SLES for SAP 15'), '15', if(equals(parameters('osType'), 'SLES for SAP 12 SP4'), '12-SP4', if(equals(parameters('osType'), 'SLES for SAP 12 SP5'), '12-SP5', '12-SP4'))))]",
-        "imageOffer" : "[if(equals(parameters('osType'), 'SLES for SAP 15 SP1'), 'sles-sap-15-sp1', 'SLES-SAP')]",
+        "imageSku" :   "[
+                         if(equals(parameters('osType'), 'SLES for SAP 15 SP1'), 'gen1'
+                        ,if(equals(parameters('osType'), 'SLES for SAP 15'), '15'
+                        ,if(equals(parameters('osType'), 'SLES for SAP 12 SP4'), '12-SP4'
+                        ,if(equals(parameters('osType'), 'SLES for SAP 12 SP5'), 'gen1'
+                        ,'12-SP4'))))
+                        ]",
+        "imageOffer" : "[
+                         if(equals(parameters('osType'), 'SLES for SAP 12 SP5'), 'sles-sap-12-sp5'
+                        ,if(equals(parameters('osType'), 'SLES for SAP 15 SP1'), 'sles-sap-15-sp1'
+                        ,'SLES-SAP')
+                        ]",
         "sshKeysArrayEmpty": [],
         "sshKeysArray": "[if(equals(length(parameters('sshKeyData')), 0), variables('sshKeysArrayEmpty'), variables('sshKeysArrayKey'))]",
         "internalSubnetId": "[resourceId(parameters('vnetResourceGroup'),'Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('subnetName'))]",
@@ -374,7 +384,7 @@
     },
     "resources": [
         {
-            "apiVersion": "2018-05-01",
+            "apiVersion": "2019-10-01",
             "name": "pid-01afcbdc-d715-44d9-b145-b0be90d9dff5",
             "type": "Microsoft.Resources/deployments",
             "properties": {
@@ -389,7 +399,7 @@
         {
             "type": "Microsoft.Network/networkSecurityGroups",
             "name": "[concat(parameters('nsgName'))]",
-            "apiVersion": "2018-04-01",
+            "apiVersion": "2019-12-01",
             "location": "[parameters('location')]",
             "condition": "[parameters('createVNET')]",
             "tags": {
@@ -417,7 +427,7 @@
         {
             "type": "Microsoft.Network/virtualNetworks",
             "name": "[parameters('vnetName')]",
-            "apiVersion": "2018-04-01",
+            "apiVersion": "2019-12-01",
             "location": "[parameters('location')]",
             "dependsOn": [
                 "[concat('Microsoft.Network/networkSecurityGroups/', parameters('nsgName'))]"
@@ -446,7 +456,7 @@
         {
             "type": "Microsoft.Network/publicIPAddresses",
             "name": "[parameters('hPIPName')]",
-            "apiVersion": "2018-04-01",
+            "apiVersion": "2019-12-01",
             "dependsOn": [
                 "[concat('Microsoft.Network/virtualNetworks/', parameters('vnetName'))]"
             ],
@@ -462,7 +472,7 @@
         {
             "type": "Microsoft.Network/networkInterfaces",
             "name": "[parameters('hNICName')]",
-            "apiVersion": "2018-06-01",
+            "apiVersion": "2019-12-01",
             "dependsOn": [
                 "[concat('Microsoft.Network/virtualNetworks/', parameters('vnetName'))]",
                 "[concat('Microsoft.Network/publicIPAddresses/', parameters('hPIPName'))]"
@@ -493,7 +503,7 @@
             "dependsOn": [
                 "[concat('Microsoft.Network/networkInterfaces/', parameters('hNICName'))]"
             ],
-            "apiVersion": "2018-06-01",
+            "apiVersion": "2019-07-01",
             "location": "[parameters('location')]",
             "tags": {
                 "provider": "[toUpper(parameters('_SUSETags').provider)]"
@@ -543,7 +553,7 @@
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "name": "[concat(parameters('hVMName'), '/', 'CustomScript')]",
-            "apiVersion": "2018-06-01",
+            "apiVersion": "2019-07-01",
             "location": "[parameters('location')]",
             "dependsOn": [
                 "[concat('Microsoft.Compute/virtualMachines/', parameters('hVMName'))]"

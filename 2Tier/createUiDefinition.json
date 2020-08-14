@@ -65,15 +65,15 @@
                             "allowedValues": [
                                 {
                                     "label": "Demo",
-                                    "value": "{\"size\":\"Demo\",\"hanaVMSize\":\"Standard_E4s_v3\"}"
+                                    "value": "{\"size\":\"Demo\",\"hanaVMSize\":\"Standard_E8s_v3\"}"
                                 },
                                 {
                                     "label": "Small",
-                                    "value": "{\"size\":\"Small\",\"hanaVMSize\":\"Standard_E64s_v3\"}"
+                                    "value": "{\"size\":\"Small\",\"hanaVMSize\":\"Standard_E32s_v3\"}"
                                 },
                                 {
                                     "label": "Medium",
-                                    "value": "{\"size\":\"Medium\",\"hanaVMSize\":\"Standard_M64s\"}"
+                                    "value": "{\"size\":\"Medium\",\"hanaVMSize\":\"Standard_E64s_v3\"}"
                                 },
                                 {
                                     "label": "Large",
@@ -115,8 +115,8 @@
                                 "value": "SLES for SAP 12 SP4"
                             },
                             {
-                                "label": "SLES for SAP 12 SP3",
-                                "value": "SLES for SAP 12 SP3"
+                                "label": "SLES for SAP 12 SP5",
+                                "value": "SLES for SAP 12 SP5"
                             }  
                           ]                
                          
@@ -137,11 +137,6 @@
                             ]
                         },
                         "osPlatform": "Linux",
-                        "imageReference": {
-                            "publisher": "SUSE",
-                            "offer": "SLES-SAP",
-                            "sku": "[if(equals(steps('VMSizes').suseOsImage, 'SLES for SAP 15 SP1'), 'gen1', if(equals(steps('VMSizes').suseOsImage, 'SLES for SAP 15'    ), '15', if(equals(steps('VMSizes').suseOsImage, 'SLES for SAP 12 SP4'), '12-SP4a', if(equals(steps('VMSizes').suseOsImage, 'SLES for SAP 12 SP3'), '12-SP3',) '12-SP4'))) ]"
-                        },
                         "count": 1,
                         "visible": true
                     }
